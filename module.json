@@ -4,7 +4,7 @@
   "version": "1.0.2",
   "description": "Модуль генератор. Мощный инструмент, позволяющий мастеру создать полную автономию со сбором лута, организовать выгрузку контейнеров на сцене в 2 клика.",
   "url": "https://github.com/blue-man-lex/scene-loot-spawner",
-  "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/module.json",
+  "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/main/module.json",
   "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.0.2/scene-loot-spawner.zip",
   "compatibility": {
     "minimum": "13",
