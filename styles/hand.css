@@ -1,0 +1,713 @@
+/* Основные стили окна */
+.ingredient-hand {
+    padding: 10px;
+    background: #1e1e1e;
+    color: #ccc;
+    font-family: 'Signika', 'Segoe UI', sans-serif;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Убираем скролл самого окна, скроллим панели */
+}
+
+/* --- ЗАГОЛОВОК --- */
+.hand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    border: 1px solid #444;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.hand-header h2 {
+    margin: 0;
+    color: #ffcc00;
+    font-weight: 700;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+}
+
+.hand-status {
+    font-size: 0.85em;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #000;
+    border: 1px solid #444;
+}
+
+.status-active { color: #4CAF50; }
+.status-inactive { color: #888; }
+
+/* --- ОСНОВНОЙ КОНТЕНТ (ГРИД) --- */
+.hand-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Две колонки для низа */
+    grid-template-rows: auto 240px;   /* Верх авто, низ 240px */
+    gap: 10px;
+    flex: 1;
+    min-height: 0; /* Важно для скролла */
+}
+
+/* --- ВЕРХНЯЯ ПАНЕЛЬ НАСТРОЕК (На всю ширину) --- */
+.settings-panel {
+    grid-column: 1 / -1; /* Растянуть на всю ширину */
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: none; /* Убираем ограничение высоты */
+    overflow-y: auto; /* Добавим скролл если не помещается */
+}
+
+/* Строки настроек */
+.settings-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Компактная строка */
+.compact-row {
+    gap: 10px;
+    padding: 3px;
+}
+
+.compact-row .control-group {
+    flex: 1;
+    min-width: 120px;
+}
+
+.compact-row .control-group label {
+    font-size: 0.85em;
+    margin-bottom: 2px;
+}
+
+.compact-row .control-group select,
+.compact-row .control-group input {
+    height: 24px;
+    font-size: 0.85em;
+    padding: 2px 4px;
+}
+
+/* Специальная строка для фильтров */
+.filters-row {
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Колонки фильтров */
+.filter-column {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-column .available-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Компактные кубики */
+    gap: 8px;
+    overflow-y: auto;
+    max-height: 180px; /* Ограничим высоту чтобы не заезжать на третий блок */
+    padding-right: 5px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-label {
+    font-weight: bold;
+    color: #ffcc00;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 3px;
+}
+
+.rarity-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    align-items: center;
+    flex: 1;
+    min-width: 150px;
+}
+
+.types-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #ffcc00;
+    white-space: nowrap;
+}
+
+.control-group select,
+.control-group input {
+    background: #111;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 3px 5px;
+    width: 100%;
+    height: 28px;
+}
+
+/* Группа чекбоксов */
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 2;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #1a1a1a;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #333;
+    font-size: 0.85em;
+    cursor: pointer;
+}
+
+.checkbox-item:hover {
+    background: #333;
+    border-color: #666;
+}
+
+.checkbox-item input {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Секция доступных ингредиентов */
+.available-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-height: 0;
+    border-top: 1px dashed #444;
+    padding-top: 5px;
+}
+
+.section-label {
+    font-size: 0.8em;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.available-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 5px;
+    max-height: 120px; /* Увеличили высоту для большего пространства */
+}
+
+.ingredient-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: #111;
+    border: 2px solid #333;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 0.8em;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.ingredient-card img {
+    width: 40px; /* Увеличим картинку */
+    height: 40px;
+    border: none;
+    flex-shrink: 0;
+}
+
+.ingredient-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.ing-name {
+    display: none; /* Скрываем название, показываем при наведении */
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.ingredient-card:hover .ing-name {
+    display: block;
+}
+
+.ing-chance {
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 0.85em;
+    margin-top: 2px;
+}
+
+/* Рамки редкости для кубиков */
+.ingredient-card.rarity-common {
+    border-color: #808080;
+    background: rgba(128, 128, 128, 0.1);
+}
+
+.ingredient-card.rarity-common:hover {
+    border-color: #a0a0a0;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.ingredient-card.rarity-uncommon {
+    border-color: #00ff00;
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+.ingredient-card.rarity-uncommon:hover {
+    border-color: #40ff40;
+    background: rgba(0, 255, 0, 0.2);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.ingredient-card.rarity-rare {
+    border-color: #0080ff;
+    background: rgba(0, 128, 255, 0.1);
+    box-shadow: 0 0 5px rgba(0, 128, 255, 0.3);
+}
+
+.ingredient-card.rarity-rare:hover {
+    border-color: #40a0ff;
+    background: rgba(0, 128, 255, 0.2);
+    box-shadow: 0 0 8px rgba(0, 128, 255, 0.5);
+}
+
+.ingredient-card.rarity-very-rare,
+.ingredient-card.rarity-very_rare,
+.ingredient-card.rarity-veryRare {
+    border-color: #8000ff;
+    background: rgba(128, 0, 255, 0.1);
+    box-shadow: 0 0 5px rgba(128, 0, 255, 0.3);
+}
+
+.ingredient-card.rarity-very-rare:hover,
+.ingredient-card.rarity-very_rare:hover,
+.ingredient-card.rarity-veryRare:hover {
+    border-color: #a040ff;
+    background: rgba(128, 0, 255, 0.2);
+    box-shadow: 0 0 8px rgba(128, 0, 255, 0.5);
+}
+
+.ingredient-card.rarity-legendary {
+    border-color: #ff8000;
+    background: rgba(255, 128, 0, 0.1);
+    box-shadow: 0 0 5px rgba(255, 128, 0, 0.3);
+}
+
+.ingredient-card.rarity-legendary:hover {
+    border-color: #ffa040;
+    background: rgba(255, 128, 0, 0.2);
+    box-shadow: 0 0 8px rgba(255, 128, 0, 0.5);
+}
+
+/* --- НИЖНИЕ ПАНЕЛИ (ПРОГРЕСС И РЕЗУЛЬТАТ) --- */
+.progress-panel,
+.results-panel {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1; /* Растягиваем панель чтобы justify-content работал */
+}
+
+/* Прижимаем содержимое прогресс панели к низу */
+.progress-panel {
+    justify-content: flex-end;
+    flex: 1; /* Растягиваем панель чтобы justify-content работал */
+}
+
+/* Убираем заголовок у левой панели */
+.progress-panel .panel-title {
+    display: none;
+}
+
+.panel-title {
+    margin: 0 0 8px 0;
+    border-bottom: 2px solid #333;
+    padding-bottom: 3px;
+    font-size: 0.9em;
+    color: #ddd;
+}
+
+/* Картинка биома */
+.biome-image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px; /* Уменьшил отступ */
+    flex-shrink: 0;
+}
+
+.biome-image {
+    width: 120px; /* Уменьшил с 160px */
+    height: 120px; /* Уменьшил с 160px */
+    border-radius: 8px; /* Уменьшил скругление */
+    border: 2px solid #444; /* Уменьшил рамку */
+    object-fit: cover;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.biome-image:hover {
+    border-color: #666;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Прогресс бар */
+.progress-container {
+    background: #000;
+    height: 24px; /* Уменьшил с 32px */
+    border-radius: 12px; /* Уменьшил с 16px */
+    border: 1px solid #444;
+    position: relative;
+    margin: 5px 0; /* Уменьшил отступы */
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #2e7d32, #4CAF50);
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75em; /* Уменьшил шрифт */
+    font-weight: bold;
+    text-shadow: 0 0 3px #000;
+    width: 100%;
+    text-align: center;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em; /* Уменьшил шрифт */
+    color: #aaa;
+    margin-top: 3px; /* Уменьшил отступ */
+}
+
+/* Список собранного */
+.collected-list {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* ТАК ЖЕ КАК У ПРАВОЙ ПАНЕЛИ */
+    gap: 8px;
+    padding-right: 5px;
+    align-content: start; /* Выравнивание по верху */
+    position: relative; /* Важно для позиционирования empty-state */
+}
+
+.collected-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: #111;
+    border: 2px solid #333;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 0.8em;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.collected-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.collected-item img {
+    width: 40px; /* Увеличим картинку */
+    height: 40px;
+    border: none;
+    flex-shrink: 0;
+}
+
+.collected-item .ing-name {
+    display: none; /* Скрываем название, показываем при наведении */
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.collected-item:hover .ing-name {
+    display: block;
+}
+
+.collected-qty {
+    background: #4a9eff;
+    color: #fff;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-style: italic;
+    font-size: 0.9em;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.empty-state i {
+    font-size: 6em; /* Увеличил с 2em до 6em (в 3 раза) */
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+/* --- ФУТЕР (КНОПКИ) --- */
+.hand-footer {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.btn {
+    flex: 1;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #ccc;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    font-size: 0.9em;
+}
+
+.btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #666;
+    color: #fff;
+}
+
+.btn-start:hover:not(:disabled) {
+    background: #2e7d32;
+    border-color: #4CAF50;
+    color: #fff;
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.3);
+}
+
+.btn-stop:hover:not(:disabled) {
+    background: #4a1818;
+    border-color: #ff4444;
+    color: #ffcccc;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.btn-collect:hover:not(:disabled) {
+    background: #2e7d32;
+    border-color: #4CAF50;
+    color: #fff;
+    box-shadow: 0 0 5px rgba(0, 128, 0, 0.3);
+}
+
+.btn-reset:hover:not(:disabled) {
+    background: #4a1818;
+    border-color: #ff4444;
+    color: #ffcccc;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.btn:disabled {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: #333;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* --- РАМКИ РЕДКОСТИ ДЛЯ КОРЗИНЫ --- */
+.collected-item.rarity-common {
+border-color: #808080;
+background: rgba(128, 128, 128, 0.1);
+}
+
+.collected-item.rarity-common:hover {
+border-color: #a0a0a0;
+background: rgba(128, 128, 128, 0.2);
+}
+
+.collected-item.rarity-uncommon {
+border-color: #00ff00;
+background: rgba(0, 255, 0, 0.1);
+box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+.collected-item.rarity-uncommon:hover {
+border-color: #40ff40;
+background: rgba(0, 255, 0, 0.2);
+box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.collected-item.rarity-rare {
+border-color: #0080ff;
+background: rgba(0, 128, 255, 0.1);
+box-shadow: 0 0 5px rgba(0, 128, 255, 0.3);
+}
+
+.collected-item.rarity-rare:hover {
+border-color: #40a0ff;
+background: rgba(0, 128, 255, 0.2);
+box-shadow: 0 0 8px rgba(0, 128, 255, 0.5);
+}
+
+.collected-item.rarity-very-rare,
+.collected-item.rarity-very_rare,
+.collected-item.rarity-veryRare {
+border-color: #8000ff;
+background: rgba(128, 0, 255, 0.1);
+box-shadow: 0 0 5px rgba(128, 0, 255, 0.3);
+}
+
+.collected-item.rarity-very-rare:hover,
+.collected-item.rarity-very_rare:hover,
+.collected-item.rarity-veryRare:hover {
+border-color: #a040ff;
+background: rgba(128, 0, 255, 0.2);
+box-shadow: 0 0 8px rgba(128, 0, 255, 0.5);
+}
+
+.collected-item.rarity-legendary {
+border-color: #ff8000;
+background: rgba(255, 128, 0, 0.1);
+box-shadow: 0 0 5px rgba(255, 128, 0, 0.3);
+}
+
+.collected-item.rarity-legendary:hover {
+border-color: #ffa040;
+background: rgba(255, 128, 0, 0.2);
+box-shadow: 0 0 8px rgba(255, 128, 0, 0.5);
+}
+
+/* Скроллбары */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #666; }
+
+/* --- ИСПРАВЛЕНИЕ ВЫПАДАЮЩИХ СПИСКОВ --- */
+.control-group select {
+    background-color: #111; /* Темный фон самого поля */
+    color: #eee;            /* Светлый текст */
+    border: 1px solid #555;
+    /* Убираем стандартную стрелочку в некоторых браузерах, чтобы стиль применился лучше, 
+       но можно оставить, если не критично. Пока оставим стандартную. */
+}
+
+/* Опции внутри выпадающего списка */
+.control-group select option {
+    background-color: #222; /* Темно-серый фон для выпадашки */
+    color: #fff;            /* Белый текст */
+    padding: 5px;
+}
+
+/* На всякий случай для Firefox/Webkit */
+@-moz-document url-prefix() {
+    .control-group select {
+        color: #eee;
+        background: #111;
+    }
+    .control-group select option {
+        color: #fff;
+        background: #222;
+    }
+}
+
+/* --- ИСПРАВЛЕНИЕ ПУСТОГО СОСТОЯНИЯ --- */
+.empty-placeholder {
+    grid-column: 1 / -1; /* Заставляет элемент растянуться на все колонки сетки */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}

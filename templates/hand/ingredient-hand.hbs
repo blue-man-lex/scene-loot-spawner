@@ -1,0 +1,192 @@
+<div class="ingredient-hand">
+    
+    <!-- ХЕДЕР -->
+    <header class="hand-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <h2><i class="fas fa-hand-holding-magic"></i> Рука Лута</h2>
+            
+            {{#if isGM}}
+            <select id="user-select" style="background: #000; color: #fff; border: 1px solid #555; padding: 2px;">
+                {{#each users}}
+                <option value="{{this.id}}" {{#if this.isSelected}}selected{{/if}}>
+                    {{this.name}} {{#if this.isActive}}(Активен){{/if}}
+                </option>
+                {{/each}}
+            </select>
+            {{/if}}
+        </div>
+        
+        <div class="hand-status">
+            {{#if isCollecting}}
+                <span class="status-active"><i class="fas fa-cog fa-spin"></i> Сбор идет...</span>
+            {{else}}
+                <span class="status-inactive"><i class="fas fa-pause"></i> Ожидание</span>
+            {{/if}}
+        </div>
+    </header>
+
+    <!-- КОНТЕНТ -->
+    <main class="hand-content">
+        
+        <!-- ПАНЕЛЬ НАСТРОЕК (ВЕРХ) -->
+        <section class="settings-panel" {{#unless isSelf}}style="pointer-events: none; opacity: 0.8;"{{/unless}}>
+            
+            <!-- Ряд 1: Основные параметры (компактный) -->
+            <div class="settings-row compact-row">
+                <div class="control-group compact">
+                    <label for="biome-select">Биом:</label>
+                    <select id="biome-select" name="biome" {{#unless isSelf}}disabled{{/unless}}>
+                        {{#each biomes}}
+                            <option value="{{this.key}}" {{#if (eq this.key ../currentBiome)}}selected{{/if}}>
+                                {{this.label}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
+                
+                <div class="control-group compact">
+                    <label for="target-amount">Цель:</label>
+                    <input type="number" id="target-amount" name="targetAmount" value="{{targetAmount}}" min="1" max="500" {{#unless isSelf}}disabled{{/unless}}>
+                </div>
+
+                <div class="control-group compact">
+                    <label for="collection-speed">Скорость:</label>
+                    <select id="collection-speed" name="collectionSpeed" {{#unless isSelf}}disabled{{/unless}}>
+                        <option value="0.1" {{#if (eq collectionSpeed "0.1")}}selected{{/if}}>x0.1 (AFK)</option>
+                        <option value="0.5" {{#if (eq collectionSpeed "0.5")}}selected{{/if}}>x0.5 (Медленно)</option>
+                        <option value="1" {{#if (eq collectionSpeed "1")}}selected{{/if}}>x1.0 (Норма)</option>
+                        <option value="2" {{#if (eq collectionSpeed "2")}}selected{{/if}}>x2.0 (Быстро)</option>
+                        <option value="5" {{#if (eq collectionSpeed "5")}}selected{{/if}}>x5.0 (Турбо)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Ряд 2: Фильтры (2 колонки) -->
+            <div class="settings-row filters-row">
+                <!-- Левая колонка: Редкость и Типы -->
+                <div class="filter-column">
+                    <div class="filter-group">
+                        <div class="filter-label">Редкость:</div>
+                        <div class="checkbox-group rarity-group">
+                            <label class="checkbox-item"><input type="checkbox" name="rarityType" value="common" {{#if checks.commonRarity}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Обычные</label>
+                            <label class="checkbox-item"><input type="checkbox" name="rarityType" value="uncommon" {{#if checks.uncommonRarity}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Необычные</label>
+                            <label class="checkbox-item"><input type="checkbox" name="rarityType" value="rare" {{#if checks.rareRarity}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Редкие</label>
+                            <label class="checkbox-item"><input type="checkbox" name="rarityType" value="veryRare" {{#if checks.veryRareRarity}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Очень редкие</label>
+                            <label class="checkbox-item"><input type="checkbox" name="rarityType" value="legendary" {{#if checks.legendaryRarity}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Легендарные</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <div class="filter-label">Категории:</div>
+                        <div class="checkbox-group types-group">
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="herbs" {{#if checks.herbs}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Травы/Еда</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="wood" {{#if checks.wood}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Дерево</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="ore" {{#if checks.ore}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Руда</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="crystals" {{#if checks.crystals}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Кристаллы</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="reagents" {{#if checks.reagents}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Реагенты</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="alchemy" {{#if checks.alchemy}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Алхимия</label>
+                            <label class="checkbox-item"><input type="checkbox" name="ingredientType" value="other" {{#if checks.other}}checked{{/if}} {{#unless isSelf}}disabled{{/unless}}> Прочее</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: Шанс найти в биоме -->
+                <div class="filter-column">
+                    <div class="filter-group">
+                        <div class="filter-label">Шанс найти в биоме:</div>
+                        <div class="available-grid">
+                            {{#each availableIngredients}}
+                                <div class="ingredient-card rarity-{{this.rarity}}" title="{{this.name}}">
+                                    <img src="{{this.img}}">
+                                    <span class="ing-name">{{this.name}}</span>
+                                    <span class="ing-chance">{{this.chance}}%</span>
+                                </div>
+                            {{else}}
+                                <div class="empty-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #777; text-align: center; padding: 20px;">
+                                    <i class="fas fa-search" style="font-size: 24px; margin-bottom: 10px; opacity: 0.5;"></i>
+                                    <span style="font-size: 13px; line-height: 1.4;">Выберите категории и редкость для просмотра шансов</span>
+                                </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ПАНЕЛЬ ПРОГРЕССА (НИЗ-ЛЕВО) -->
+        <section class="progress-panel">
+            <div class="biome-image-container">
+                <img src="modules/scene-loot-spawner/assets/biomes/{{currentBiome}}.png" 
+                     alt="{{currentBiome}}" 
+                     class="biome-image" 
+                     onerror="this.src='modules/scene-loot-spawner/assets/biomes/forest.png'">
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-fill" style="width: {{progress.percentage}}%"></div>
+                <div class="progress-text">{{progress.current}} / {{progress.max}} ({{progress.percentage}}%)</div>
+            </div>
+
+            <div class="stats-row">
+                <span>Скорость: <b>{{progress.rate}}/тик</b></span>
+                <span>Собрано типов: <b>{{collected.length}}</b></span>
+            </div>
+        </section>
+
+        <!-- ПАНЕЛЬ РЕЗУЛЬТАТОВ (НИЗ-ПРАВО) -->
+        <section class="results-panel">
+            <div class="collected-list">
+                {{#if collected.length}}
+                    {{#each collected}}
+                        <div class="collected-item rarity-{{this.rarity}}">
+                            <img src="{{this.img}}">
+                            <div class="ing-name">{{this.name}}</div>
+                            <span class="collected-qty">x{{this.quantity}}</span>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <div class="empty-state">
+                        <i class="fas fa-basket-shopping"></i>
+                        <span>Пусто...</span>
+                    </div>
+                {{/if}}
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ФУТЕР -->
+    <footer class="hand-footer">
+        {{#if isSelf}}
+            {{#if isCollecting}}
+                <button id="stop-collection" class="btn btn-stop">
+                    <i class="fas fa-stop"></i> Стоп
+                </button>
+            {{else}}
+                <button id="start-collection" class="btn btn-start">
+                    <i class="fas fa-play"></i> Старт
+                </button>
+            {{/if}}
+
+            <button id="reset-progress" class="btn btn-reset">
+                <i class="fas fa-redo"></i> Сброс
+            </button>
+        {{else}}
+            {{#if isGM}}
+                {{#if isCollecting}}
+                    <button id="force-stop" class="btn btn-stop">
+                        <i class="fas fa-ban"></i> Принудительный СТОП
+                    </button>
+                {{else}}
+                    <div style="width: 100%; text-align: center; color: #777;">
+                        Игрок не собирает
+                    </div>
+                {{/if}}
+            {{else}}
+                <div style="width: 100%; text-align: center; color: #777;">
+                    Просмотр режима
+                </div>
+            {{/if}}
+        {{/if}}
+    </footer>
+</div>

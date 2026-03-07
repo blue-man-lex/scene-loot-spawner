@@ -1,0 +1,335 @@
+/* --- ГЛАЗ ЛУТА (Loot Eye) --- */
+.loot-eye .window-content {
+    padding: 0;
+    overflow: hidden;
+    background: #181818;
+    color: #ccc;
+    font-family: "Signika", sans-serif;
+}
+
+.loot-eye-container {
+    display: grid;
+    grid-template-columns: 260px 1fr; /* Чуть шире сайдбар */
+    height: 100%;
+}
+
+/* САЙДБАР (Список сундуков) */
+.eye-sidebar {
+    background: #111;
+    border-right: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 12px;
+    margin: 0;
+    background: #1a1a1a;
+    border-bottom: 2px solid #333;
+    color: #ffcc00;
+    text-align: center;
+    font-weight: bold;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    font-size: 0.95em;
+    letter-spacing: 1px;
+}
+
+.token-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 5px 0;
+}
+
+/* Элемент списка сундуков */
+.token-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #222;
+    cursor: pointer;
+    color: #888;
+    transition: all 0.2s;
+}
+
+.token-entry:hover {
+    background: #1e1e1e;
+    color: #eee;
+    padding-left: 18px; /* Небольшой сдвиг при наведении */
+}
+
+.token-entry.active {
+    background: #2a2a2a;
+    color: #fff;
+    border-left: 4px solid #ffcc00;
+}
+
+.token-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #000;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.token-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+/* Кнопка "Прицел" */
+.pan-btn {
+    opacity: 0.0; /* Скрыта по умолчанию для чистоты */
+    transition: all 0.2s;
+    padding: 6px;
+    color: #ffcc00;
+}
+.token-entry:hover .pan-btn { opacity: 0.5; }
+.pan-btn:hover { opacity: 1 !important; transform: scale(1.2); }
+
+/* ПРАВАЯ КОЛОНКА (Контент) */
+.eye-content {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    background: #181818;
+}
+
+/* Шапка контента (Обновленная) */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, #222, #1a1a1a);
+    padding: 15px 20px;
+    border-bottom: 1px solid #444;
+    flex-shrink: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.header-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    overflow: hidden; /* Чтобы текст не ломал верстку */
+}
+
+.big-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    border: 2px solid #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background: #000;
+    flex-shrink: 0;
+}
+
+.header-info h2 {
+    margin: 0;
+    color: #fff;
+    border: none;
+    font-size: 1.3em;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px; /* Ограничиваем ширину текста */
+}
+
+/* Кнопка удаления токена (Аккуратная) */
+.btn-danger {
+    background: transparent;
+    color: #884444;
+    border: 1px solid #552222;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+.btn-danger:hover {
+    background: #8b0000;
+    border-color: #ff4444;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+}
+
+/* Блок валюты */
+.currency-block {
+    display: flex;
+    gap: 15px;
+    background: #131313;
+    padding: 10px 20px;
+    border-bottom: 1px solid #333;
+    flex-shrink: 0;
+    justify-content: center; /* Центрируем монетки */
+}
+
+.currency-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #aaa;
+    font-weight: bold;
+    font-size: 0.9em;
+    background: #222;
+    padding: 4px 10px;
+    border-radius: 15px;
+    border: 1px solid #333;
+}
+
+.currency-input {
+    width: 50px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    border-bottom: 1px solid #555;
+    text-align: right;
+    padding: 0 4px;
+    font-family: monospace;
+    font-size: 1.1em;
+}
+
+.currency-input:focus {
+    border-color: #ffcc00;
+    outline: none;
+}
+
+/* Список инвентаря */
+.inventory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    padding: 10px 20px;
+}
+
+.inventory-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 12px; /* Чуть компактнее по вертикали */
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: background 0.2s;
+}
+
+.inventory-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #444;
+}
+
+/* --- КАРТИНКА ПРЕДМЕТА (Кликабельна) --- */
+.inventory-item img {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: #000;
+    cursor: pointer; /* Курсор-рука */
+}
+.inventory-item img:hover {
+    border-color: #ffcc00; /* Подсветка */
+}
+
+/* --- НАЗВАНИЕ ПРЕДМЕТА (Кликабельно) --- */
+.inventory-item .item-name {
+    flex: 1;
+    font-weight: bold;
+    color: #ddd;
+    font-size: 0.95em;
+    line-height: 1.2;
+    margin-right: 10px;
+    word-break: break-word;
+    cursor: pointer; /* Курсор-рука */
+    transition: color 0.2s;
+}
+
+.inventory-item .item-name:hover {
+    color: #ffcc00; /* Цвет ссылки */
+    text-decoration: underline;
+}
+
+.inventory-item .item-qty {
+    flex: 0 0 40px; /* Фиксированная ширина, не сжимается и не растет */
+    width: 40px;
+    text-align: center;
+    background: #111;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px;
+    height: 28px;
+}
+
+.item-delete {
+    flex-shrink: 0; /* Иконка удаления тоже не сжимается */
+    color: #666;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.2s;
+}
+.item-delete:hover { 
+    color: #ff4444;
+    transform: scale(1.1);
+}
+
+/* Пустые состояния */
+.empty-msg {
+    color: #666;
+    text-align: center;
+    padding: 40px;
+    font-style: italic;
+    border: 2px dashed #333;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.no-selection {
+    color: #555;
+    text-align: center;
+    padding-top: 150px;
+    font-style: italic;
+    font-size: 1.2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.no-selection::before {
+    content: "\f06e"; /* fa-eye icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 4em;
+    opacity: 0.15;
+}
+
+/* Рамки редкости */
+.inventory-item.rarity-uncommon { border-left: 3px solid #00ff00; }
+.inventory-item.rarity-rare { border-left: 3px solid #0080ff; }
+.inventory-item.rarity-veryRare { border-left: 3px solid #8000ff; }
+.inventory-item.rarity-legendary { border-left: 3px solid #ff8000; }
+
+/* Изоляция скролла */
+.loot-eye ::-webkit-scrollbar { width: 8px; height: 8px; }
+.loot-eye ::-webkit-scrollbar-track { background: #111; }
+.loot-eye ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+.loot-eye ::-webkit-scrollbar-thumb:hover { background: #666; }

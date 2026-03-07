@@ -1,0 +1,310 @@
+/* --- ГЕНЕРАТОР ЛУТА (Основное окно) --- */
+.sls-window {
+    background: #1a1a1a;
+    border: 2px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.sls-window .window-header {
+    background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+    border-bottom: 2px solid #444;
+    border-radius: 6px 6px 0 0;
+    padding: 8px 15px;
+}
+
+.sls-window .window-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffcc00;
+    text-shadow: 0 0 5px rgba(255,204,0,0.3);
+}
+
+.sls-window .window-content {
+    padding: 15px;
+    background: #141414;
+    border-radius: 0 0 6px 6px;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: #ccc;
+    font-family: "Signika", sans-serif;
+}
+
+/* --- ФОРМЫ И INPUTS --- */
+.sls-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sls-header {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #444;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.sls-header label {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ffcc00;
+}
+
+.sls-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.sls-row label {
+    color: #ccc;
+    min-width: 80px;
+    font-weight: bold;
+}
+
+/* --- СЕЛЕКТОРЫ В ШАПКЕ --- */
+.tier-selector,
+.max-items-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tier-selector {
+    flex: 1;
+}
+
+.tier-selector select,
+.max-items-selector select {
+    background: #2a2a2a;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    min-width: 120px;
+}
+
+.tier-selector select {
+    flex: 1;
+    margin: 0 !important;
+}
+
+.tier-selector select:hover,
+.max-items-selector select:hover {
+    border-color: #ffcc00;
+    background: #333;
+}
+
+.tier-selector select:focus,
+.max-items-selector select:focus {
+    outline: none;
+    border-color: #ffcc00;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
+}
+
+/* --- КНОПКИ (Иконки) --- */
+.sls-icon-btn,
+.sls-toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    color: #888;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+
+.sls-icon-btn:hover,
+.sls-toggle-btn:hover {
+    background: #4a1818;
+    border-color: #ff4444;
+    color: #ffcccc;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.sls-icon-btn:active,
+.sls-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- ТАБЛИЦА РЕГИОНОВ --- */
+.sls-regions-container {
+    margin-top: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    background: #141414;
+}
+
+.sls-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sls-table th {
+    background: #333;
+    color: #fff;
+    padding: 8px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.sls-table td {
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    vertical-align: middle;
+}
+
+.sls-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.region-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+}
+
+.color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    flex-shrink: 0;
+}
+
+/* --- ПОЛЯ ВВОДА В ТАБЛИЦЕ --- */
+.sls-window select,
+.sls-window input[type="number"],
+.sls-window input[type="text"] {
+    background-color: #303030;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 3px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sls-window select:focus,
+.sls-window input:focus {
+    border-color: #ffcc00;
+    outline: none;
+}
+
+/* Стилизация опций */
+.sls-window option {
+    background-color: #303030;
+    color: #f0f0f0;
+}
+
+/* Чекбоксы */
+.sls-window input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+/* --- ФУТЕР --- */
+.sls-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sls-btn {
+    background: linear-gradient(180deg, #5c4e38, #3b3223);
+    border: 1px solid #1a1a1a;
+    color: #fff;
+    padding: 10px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    box-shadow: 0 0 5px #000;
+    font-weight: bold;
+}
+
+.sls-btn:hover {
+    background: #6e5d42;
+    text-shadow: 0 0 5px #ffcc00;
+    border-color: #ffcc00;
+}
+
+.sls-empty {
+    padding: 20px;
+    text-align: center;
+    color: #777;
+    font-style: italic;
+}
+
+/* --- БЕЙДЖИ ИСТОЧНИКОВ --- */
+.sls-sources-status {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding-top: 5px;
+    border-top: 1px solid #333;
+    flex-wrap: wrap;
+}
+
+.source-label {
+    font-size: 0.85em;
+    color: #777;
+    margin-right: 5px;
+}
+
+.source-badge {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    font-weight: 500;
+}
+
+.source-badge.ok {
+    background-color: #2d6a2d;
+    border-color: #4b8c4b;
+}
+
+.source-badge.error {
+    background-color: #8b0000;
+    border-color: #ff4444;
+}
+
+.source-badge.world {
+    background-color: #2b4b7c;
+    border-color: #4f7cb5;
+}
+
+.source-badge i {
+    font-size: 0.9em;
+}
+
+/* Скроллбар (изолированный) */
+.sls-window ::-webkit-scrollbar { width: 8px; height: 8px; }
+.sls-window ::-webkit-scrollbar-track { background: #111; }
+.sls-window ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+.sls-window ::-webkit-scrollbar-thumb:hover { background: #666; }

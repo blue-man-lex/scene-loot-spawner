@@ -1,0 +1,65 @@
+<div class="loot-eye-container">
+    <!-- ЛЕВАЯ КОЛОНКА: СПИСОК СУНДУКОВ -->
+    <aside class="eye-sidebar">
+        <h3 class="sidebar-header">Найдено: {{tokens.length}}</h3>
+        <div class="token-list">
+            {{#each tokens}}
+            <div class="token-entry {{#if this.isSelected}}active{{/if}}" data-id="{{this.id}}">
+                <img src="{{this.img}}" class="token-img">
+                <span class="token-name">{{this.name}}</span>
+                <i class="fas fa-crosshairs pan-btn" title="Показать на карте"></i>
+            </div>
+            {{else}}
+                <div class="empty-msg">Сундуков нет</div>
+            {{/each}}
+        </div>
+    </aside>
+
+    <!-- ПРАВАЯ КОЛОНКА: СОДЕРЖИМОЕ -->
+    <main class="eye-content">
+        {{#if selected}}
+            <header class="content-header">
+                <div class="header-info">
+                    <img src="{{selected.img}}" class="big-icon">
+                    <h2>{{selected.name}}</h2>
+                </div>
+                <button id="delete-token-btn" class="btn-danger"><i class="fas fa-trash"></i> Удалить</button>
+            </header>
+
+            <!-- ВАЛЮТА -->
+            <div class="currency-block">
+                <div class="currency-item">
+                    <i class="fas fa-coins" style="color: gold;"></i>
+                    <input type="number" class="currency-input" data-type="gp" value="{{selected.currency.gp}}"> GP
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-coins" style="color: silver;"></i>
+                    <input type="number" class="currency-input" data-type="sp" value="{{selected.currency.sp}}"> SP
+                </div>
+                <div class="currency-item">
+                    <i class="fas fa-coins" style="color: #cd7f32;"></i>
+                    <input type="number" class="currency-input" data-type="cp" value="{{selected.currency.cp}}"> CP
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- ПРЕДМЕТЫ -->
+            <div class="inventory-list">
+                {{#each selected.items}}
+                <div class="inventory-item rarity-{{this.rarity}}">
+                    <img src="{{this.img}}">
+                    <span class="item-name">{{this.name}}</span>
+                    <input type="number" class="item-qty" data-id="{{this.id}}" value="{{this.quantity}}" min="1">
+                    <i class="fas fa-trash item-delete" data-id="{{this.id}}"></i>
+                </div>
+                {{else}}
+                    <div class="empty-msg">Пусто (Перетащите сюда предмет)</div>
+                {{/each}}
+            </div>
+
+        {{else}}
+            <div class="no-selection">Выберите контейнер слева</div>
+        {{/if}}
+    </main>
+</div>

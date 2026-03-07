@@ -1,0 +1,150 @@
+<form class="sls-form">
+    {{#if noScene}}
+    <div class="sls-error">Нет активной сцены!</div>
+    {{else}}
+    
+    <!-- Шапка настроек -->
+    <header class="sls-header">
+        <div class="header-controls">
+            <!-- Кнопка сброса -->
+            <button type="button" data-action="reset" class="sls-icon-btn" title="Сбросить настройки">
+                <i class="fas fa-trash"></i>
+            </button>
+
+            <!-- Выбор Тира -->
+            <div class="tier-selector">
+                <label><i class="fas fa-skull"></i> Сложность (Tier):</label>
+                <select name="tier">
+                    {{#each tiersList}}
+                        <option value="{{this.key}}" {{#if this.isSelected}}selected{{/if}}>{{this.label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <!-- Максимальное количество предметов -->
+            <div class="max-items-selector">
+                <label><i class="fas fa-cubes"></i> Максимум предметов:</label>
+                <select name="maxItems">
+                    <option value="1">1 предмет</option>
+                    <option value="2">2 предмета</option>
+                    <option value="3">3 предмета</option>
+                    <option value="4" selected>4 предмета</option>
+                    <option value="5">5 предметов</option>
+                    <option value="6">6 предметов</option>
+                    <option value="8">8 предметов</option>
+                    <option value="10">10 предметов</option>
+                    <option value="12">12 предметов</option>
+                    <option value="15">15 предметов</option>
+                    <option value="20">20 предметов</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Индикатор источников -->
+        <div class="sls-sources-status">
+            <span class="source-label">Источники:</span>
+            {{#if useWorldItems}}
+                <span class="source-badge world" title="Предметы из папок мира"><i class="fas fa-globe"></i> World</span>
+            {{/if}}
+            {{#each sources}}
+                {{#if this.valid}}
+                    <span class="source-badge ok"><i class="fas fa-check"></i> {{this.id}}</span>
+                {{else}}
+                    <span class="source-badge error"><i class="fas fa-times"></i> {{this.id}}</span>
+                {{/if}}
+            {{/each}}
+        </div>
+    </header>
+
+    <hr>
+
+    <div class="sls-regions-container">
+        {{#unless hasRegions}}
+            <p class="sls-empty">Нет регионов на сцене.</p>
+        {{else}}
+            <table class="sls-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Регион</th>
+                        <th style="width: 18%">Профиль Лута</th>
+                        <th style="width: 18%">Биом</th>
+                        <th style="width: 22%">Контейнер</th>
+                        <th style="width: 10%">Кол-во</th>
+                        <th style="width: 5%; text-align: center;">
+                            <button type="button" id="toggleAllRegions" class="sls-toggle-btn" title="{{toggleButtonTitle}}">
+                                <i class="fas {{toggleButtonIcon}}"></i>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each rows}}
+                    <tr>
+                        <td class="region-name">
+                            <span class="color-dot" style="background-color: {{this.color}}"></span>
+                            <div>
+                                <div>{{this.name}}</div>
+                                <div style="font-size: 0.7em; color: #777;">{{this.elevationInfo}}</div>
+                            </div>
+                        </td>
+                        
+                        <!-- Профиль -->
+                        <td>
+                            <select name="profile-{{this.id}}">
+                                {{#each this.profiles}}
+                                    <option value="{{this.key}}" {{#if this.isSelected}}selected{{/if}}>{{this.label}}</option>
+                                {{/each}}
+                            </select>
+                        </td>
+
+                        <!-- Биом -->
+                        <td>
+                            <select name="biome-{{this.id}}">
+                                {{#each this.biomes}}
+                                    <option value="{{this.key}}" {{#if this.isSelected}}selected{{/if}}>{{this.label}}</option>
+                                {{/each}}
+                            </select>
+                        </td>
+
+                        <!-- Контейнер -->
+                        <td>
+                            <select name="container-{{this.id}}">
+                                <option value="">-- Не выбрано --</option>
+                                {{#each this.containers}}
+                                    {{#if this.isFolder}}
+                                        <option value="{{this.id}}" style="font-weight: bold; color: #ffcc00;" {{#if this.isSelected}}selected{{/if}}>
+                                            {{this.name}}
+                                        </option>
+                                    {{else}}
+                                        <option value="{{this.id}}" {{#if this.isSelected}}selected{{/if}}>
+                                            {{this.name}}
+                                        </option>
+                                    {{/if}}
+                                {{/each}}
+                            </select>
+                        </td>
+
+                        <!-- Кол-во -->
+                        <td>
+                            <input type="number" name="count-{{this.id}}" value="{{this.savedCount}}" min="1" max="20" style="text-align: center;">
+                        </td>
+
+                        <!-- Чекбокс -->
+                        <td style="text-align: center;">
+                            <input type="checkbox" name="doSpawn-{{this.id}}" {{#if this.savedCheck}}checked{{/if}}>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        {{/unless}}
+    </div>
+
+    <footer class="sls-footer">
+        <button type="submit" name="submit" class="sls-btn">
+            <i class="fas fa-dice-d20"></i> ГЕНЕРИРОВАТЬ ЛУТ
+        </button>
+    </footer>
+
+    {{/if}}
+</form>

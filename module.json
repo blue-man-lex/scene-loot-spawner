@@ -1,0 +1,78 @@
+{
+  "id": "scene-loot-spawner",
+  "title": "Scene Loot Spawner",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "13"
+  },
+  "relationships": {
+    "requires": [
+      {
+        "id": "treasure-hoard-manager",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
+        "id": "socketlib",
+        "type": "module",
+        "compatibility": {}
+      }
+    ],
+    "recommends": [
+      {
+        "id": "fifthpendium",
+        "type": "module",
+        "reason": "Большая база предметов SRD",
+        "compatibility": {}
+      },
+      {
+        "id": "ag-dnd2024",
+        "type": "module",
+        "reason": "Предметы по правилам 2024 года",
+        "compatibility": {}
+      },
+      {
+        "id": "laaru-dnd5-hw",
+        "type": "module",
+        "reason": "Качественный перевод и предметы на русском",
+        "compatibility": {}
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js",
+    "scripts/config.js",
+    "scripts/lootGenerator.js",
+    "scripts/regionHandler.js",
+    "scripts/spawner.js",
+    "scripts/lootApp.js",
+    "scripts/eye/lootEyeApp.js"
+  ],
+  "styles": [
+    {
+      "src": "styles/spawner.css"
+    },
+    {
+      "src": "styles/hand.css"
+    },
+    {
+      "src": "styles/eye.css"
+    }
+  ],
+  "packs": [
+    {
+      "name": "BG3",
+      "label": "Scene Loot Spawner",
+      "path": "packs/BG3",
+      "type": "Item",
+      "system": "dnd5e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "description": "",
+  "flags": {}
+}
