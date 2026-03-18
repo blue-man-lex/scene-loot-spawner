@@ -114,24 +114,6 @@ Hooks.once("init", () => {
         default: "dnd5e.items"
     });
 
-    game.settings.register("scene-loot-spawner", "alchemySources", {
-        name: "Компендиумы Алхимии",
-        hint: "ID через запятую. Предметы отсюда станут 'Алхимией'.",
-        scope: "world",
-        config: true,
-        type: String,
-        default: ""
-    });
-
-    game.settings.register("scene-loot-spawner", "bg3Sources", {
-        name: "Компендиумы BG3",
-        hint: "ID через запятую. Предметы отсюда станут 'BG3'.",
-        scope: "world",
-        config: true,
-        type: String,
-        default: "scene-loot-spawner.BG3"
-    });
-
     game.settings.register("scene-loot-spawner", "includeWeaponArmorInHand", {
         name: "Включать оружие/броню в Руку Лута?",
         hint: "Если включено, они попадут в 'Прочее'.",
@@ -139,6 +121,20 @@ Hooks.once("init", () => {
         config: true,
         type: Boolean,
         default: false
+    });
+
+    game.settings.register("scene-loot-spawner", "containerModule", {
+        name: "Модуль для контейнеров",
+        hint: "Выберите модуль, который будет обрабатывать контейнеры лута.",
+        scope: "world",
+        config: true,
+        type: String,
+        choices: {
+            "none": "Без модуля (обычные токены)",
+            "itempiles": "Item Piles",
+            "thm": "Treasure Hoard Manager"
+        },
+        default: "thm"
     });
 });
 

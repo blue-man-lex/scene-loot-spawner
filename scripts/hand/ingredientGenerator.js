@@ -44,10 +44,8 @@ export class IngredientGenerator {
 
             // Берем ВСЕ компендиумы из всех полей настроек и сливаем в один котел
             const lootIds = getIds("lootSources");
-            const alchemyIds = getIds("alchemySources");
-            const bg3Ids = getIds("bg3Sources");
 
-            const allSourceIds = [...new Set([...lootIds, ...alchemyIds, ...bg3Ids])];
+            const allSourceIds = [...new Set([...lootIds])];
 
             for (const id of allSourceIds) {
                 const pack = game.packs.get(id);

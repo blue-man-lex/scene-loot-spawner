@@ -1,12 +1,78 @@
 export const LOOT_CONFIG = {
     // Уровни сложности (CR)
     tiers: {
-        "0-1": { label: "Tier 0 (CR 0-1)", rarityCap: "common", goldMult: 0.1 },
-        "1-4": { label: "Tier 1 (CR 1-4)", rarityCap: "uncommon", goldMult: 0.5 },
-        "5-10": { label: "Tier 2 (CR 5-10)", rarityCap: "rare", goldMult: 1.0 },
-        "11-16": { label: "Tier 3 (CR 11-16)", rarityCap: "veryRare", goldMult: 2.0 },
-        "17-19": { label: "Tier 4 (CR 17-19)", rarityCap: "legendary", goldMult: 5.0 },
-        "20": { label: "Tier 5 (CR 20 - Эпик)", rarityCap: "legendary", goldMult: 10.0 }
+        "0-1": { 
+            label: "Tier 0 (CR 0-1)", 
+            rarityCap: "common", 
+            goldMult: 0.1,
+            rarityWeights: {
+                "common": 10,
+                "uncommon": 0,
+                "rare": 0,
+                "veryRare": 0,
+                "legendary": 0
+            }
+        },
+        "1-4": { 
+            label: "Tier 1 (CR 1-4)", 
+            rarityCap: "uncommon", 
+            goldMult: 0.5,
+            rarityWeights: {
+                "common": 7,
+                "uncommon": 3,
+                "rare": 0,
+                "veryRare": 0,
+                "legendary": 0
+            }
+        },
+        "5-10": { 
+            label: "Tier 2 (CR 5-10)", 
+            rarityCap: "rare", 
+            goldMult: 1.0,
+            rarityWeights: {
+                "common": 5,
+                "uncommon": 4,
+                "rare": 1,
+                "veryRare": 0,
+                "legendary": 0
+            }
+        },
+        "11-16": { 
+            label: "Tier 3 (CR 11-16)", 
+            rarityCap: "veryRare", 
+            goldMult: 2.0,
+            rarityWeights: {
+                "common": 4,
+                "uncommon": 3,
+                "rare": 2,
+                "veryRare": 1,
+                "legendary": 0
+            }
+        },
+        "17-19": { 
+            label: "Tier 4 (CR 17-19)", 
+            rarityCap: "legendary", 
+            goldMult: 5.0,
+            rarityWeights: {
+                "common": 3,
+                "uncommon": 3,
+                "rare": 2,
+                "veryRare": 1,
+                "legendary": 1
+            }
+        },
+        "20": { 
+            label: "Tier 5 (CR 20 - Эпик)", 
+            rarityCap: "legendary", 
+            goldMult: 10.0,
+            rarityWeights: {
+                "common": 2,
+                "uncommon": 2,
+                "rare": 2,
+                "veryRare": 2,
+                "legendary": 2
+            }
+        }
     },
 
     // Биомы - модификаторы шансов для типов предметов
@@ -99,8 +165,7 @@ export const LOOT_CONFIG = {
         "library": {
             label: "Библиотека / Кабинет",
             filters: [
-                { type: "loot", subtype: "scroll", chance: 0.4 }, // В D&D свитки это часто consumable
-                { type: "consumable", subtype: "scroll", chance: 0.4 }
+                { type: "consumable", subtype: "scroll", chance: 0.8 } // Свитки обычно consumable в dnd5e
             ]
         },
         "treasure": {

@@ -60,19 +60,18 @@ export class LootGenerator {
         const sourcesString = game.settings.get("scene-loot-spawner", "lootSources");
         const sourceIds = sourcesString.split(",").map(s => s.trim());
         console.log(`SLS DEBUG | Ищем в компендиумах: ${sourcesString}`);
-        
-        const rarityWeights = { "common": 1, "uncommon": 2, "rare": 3, "veryRare": 4, "legendary": 5 };
-        const maxRarityWeight = rarityWeights[tier.rarityCap] || 99;
 
         for (const id of sourceIds) {
             const pack = game.packs.get(id);
             if (pack) {
-                // Запрашиваем поля для фильтрации
+                // Запрашиваем поля для фильтрации (без проблемных полей)
                 const index = await pack.getIndex({ fields: ["system.rarity", "system.price.value", "type"] });
+                console.log(`SLS DEBUG | Компендиум ${id}: ${index.length} предметов загружено`);
                 
                 if (profile.filters) {
                     // Комбинируем фильтры профиля и биома
                     const combinedFilters = this._combineProfileAndBiomeFilters(profile, biome);
+                    console.log(`SLS DEBUG | Комбинированные фильтры:`, combinedFilters);
                     
                     for (const filter of combinedFilters) {
                         if (Math.random() > filter.chance) continue;
@@ -81,7 +80,24 @@ export class LootGenerator {
                             // 1. Тип (отсеиваем классы, расы и т.д.)
                             if (i.type !== filter.type) return false;
 　　　　　　　　　　　　
-                            // 2. Редкость - строгий фильтр по уровню
+                            // 2. Подтип если указан (более гибкая проверка)
+                            if (filter.subtype) {
+                                const itemSubtype = i.system?.type?.subtype || i.system?.type || "";
+                                if (itemSubtype && typeof itemSubtype === 'string' && !itemSubtype.includes(filter.subtype)) {
+                                    // Для отладки - покажем что не совпало
+                                    if (i.type === filter.type) {
+                                        console.log(`SLS DEBUG | Подтип не совпал: ${i.name} (${i.type}) ищем '${filter.subtype}' в '${itemSubtype}'`);
+                                    }
+                                    return false;
+                                }
+                            }
+                            
+                            // 3. Магические предметы если указан флаг magic
+                            if (filter.magic) {
+                                if (!i.system?.properties?.magical) return false;
+                            }
+                            
+                            // 4. Редкость - строгий фильтр по уровню
                             const itemRarity = i.system?.rarity || "common";
                             
                             // Список разрешенных редкостей для этого уровня
@@ -99,12 +115,24 @@ export class LootGenerator {
                                 return false;
                             }
 
+                            // 5. Взвешивание по редкости - применяем весовой коэффициент
+                            const rarityWeight = tier.rarityWeights?.[itemRarity] || 1;
+                            if (rarityWeight === 0) {
+                                console.log(`SLS DEBUG | Отфильтрован ${i.name} - вес редкости ${itemRarity} = 0 для уровня ${tierKey}`);
+                                return false;
+                            }
+                            
+                            // Добавляем весовой коэффициент в предмет для последующего выбора
+                            i._rarityWeight = rarityWeight;
+
                             return true;
                         });
                         
                         // Добавляем найденное в общий котел, помечая, из какого пака оно
                         matches.forEach(m => m._pack = pack); 
                         candidates = candidates.concat(matches);
+                        
+                        console.log(`SLS DEBUG | Фильтр ${filter.type}-${filter.subtype || 'any'}: найдено ${matches.length} предметов`);
                     }
                 }
             } else {
@@ -121,7 +149,22 @@ export class LootGenerator {
         
         if (candidates.length > 0) {
             for (let i = 0; i < itemCount; i++) {
-                const choice = candidates[Math.floor(Math.random() * candidates.length)];
+                // ВЗВЕШЕННЫЙ ВЫБОР с учетом rarityWeight
+                const weightedCandidates = candidates.map(c => ({
+                    candidate: c,
+                    weight: c._rarityWeight || 1
+                }));
+                
+                // Создаем массив с повторениями согласно весам
+                const weightedPool = [];
+                for (const wc of weightedCandidates) {
+                    for (let w = 0; w < wc.weight; w++) {
+                        weightedPool.push(wc.candidate);
+                    }
+                }
+                
+                // Случайный выбор из взвешенного пула
+                const choice = weightedPool[Math.floor(Math.random() * weightedPool.length)];
                 
                 // Получаем документ (из мира или из пака)
                 let itemDoc;
@@ -153,7 +196,7 @@ export class LootGenerator {
                     }
 
                     itemsToSpawn.push(itemData);
-                    console.log(`SLS DEBUG | Добавлен предмет: ${itemData.name} (${type}), кол-во: ${itemData.system.quantity}`);
+                    console.log(`SLS DEBUG | Добавлен предмет: ${itemData.name} (${type}, ${rarity}), кол-во: ${itemData.system.quantity}`);
                 }
             }
         } else {
@@ -238,7 +281,8 @@ export class LootGenerator {
             if (item.type === filter.type) {
                 // Проверяем подтип если указан
                 if (filter.subtype) {
-                    const itemSubtype = item.system?.type?.subtype || item.system?.type || "";
+                    // Поддерживаем разные форматы подтипов в dnd5e
+                    const itemSubtype = item.system?.type?.subtype || "";
                     if (itemSubtype.includes(filter.subtype)) {
                         return true;
                     }
