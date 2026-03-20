@@ -172,9 +172,32 @@ export class LootSpawner {
                         console.warn(`SLS | Treasure Hoard Manager не найден или не активен`);
                     }
                 } else if (selectedModule === "itempiles") {
-                    // Работаем с Item Piles (пока не реализовано)
-                    console.log(`SLS DEBUG | Item Piles выбран, но пока не поддерживается`);
-                    // TODO: Добавить логику для Item Piles
+                    console.log(`SLS DEBUG | Интеграция с Item Piles...`);
+                    
+                    const itemPilesModule = game.modules.get("item-piles");
+                    
+                    if (itemPilesModule?.active && game.itempiles?.API) {
+                        try {
+                            // Настройки контейнера для Item Piles
+                            const pileSettings = {
+                                isContainer: true,           // Это контейнер (сундук/ящик)
+                                closed: true,                // Закрыт по умолчанию
+                                deleteWhenEmpty: false,      // Не удалять, когда пустой
+                                canInspect: true,            // Можно осматривать
+                                distance: 1                  // Дистанция взаимодействия
+                            };
+
+                            // Вызываем правильный метод: turnTokensIntoItemPiles
+                            // Настройки передаем напрямую вторым аргументом!
+                            await game.itempiles.API.turnTokensIntoItemPiles(token.document, pileSettings);
+
+                            console.log(`SLS DEBUG | КОНТЕЙНЕР Item Piles создан для: ${token.name}`);
+                        } catch (error) {
+                            console.error(`SLS ERROR | Ошибка при создании Item Pile:`, error);
+                        }
+                    } else {
+                        console.warn(`SLS | Модуль Item Piles не найден, не активен или API недоступно`);
+                    }
                 } else {
                     console.log(`SLS DEBUG | Модуль контейнеров не выбран, создаем обычные токены`);
                 }
