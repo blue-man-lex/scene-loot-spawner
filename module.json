@@ -1,11 +1,10 @@
 {
   "id": "scene-loot-spawner",
   "title": "Scene Loot Spawner",
-  "version": "1.0.3",
-  "description": "Модуль генератор. Мощный инструмент, позволяющий мастеру создать полную автономию со сбором лута, организовать выгрузку контейнеров на сцене в 2 клика.",
+  "version": "1.0.4",
   "url": "https://github.com/blue-man-lex/scene-loot-spawner",
   "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/main/module.json",
-  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.0.3/scene-loot-spawner.zip",
+  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.0.4/scene-loot-spawner.zip",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -13,34 +12,39 @@
   "relationships": {
     "requires": [
       {
-        "id": "treasure-hoard-manager",
+        "id": "socketlib",
         "type": "module",
         "compatibility": {}
       },
       {
-        "id": "socketlib",
+        "id": "lib-wrapper",
         "type": "module",
         "compatibility": {}
       }
     ],
     "recommends": [
       {
+        "id": "treasure-hoard-manager",
+        "type": "module",
+        "compatibility": {}
+      },
+      {
         "id": "fifthpendium",
         "type": "module",
-        "reason": "Большая база предметов SRD",
-        "compatibility": {}
+        "compatibility": {},
+        "reason": "Большая база предметов SRD"
       },
       {
         "id": "ag-dnd2024",
         "type": "module",
-        "reason": "Предметы по правилам 2024 года",
-        "compatibility": {}
+        "compatibility": {},
+        "reason": "Предметы по правилам 2024 года"
       },
       {
         "id": "laaru-dnd5-hw",
         "type": "module",
-        "reason": "Качественный перевод и предметы на русском",
-        "compatibility": {}
+        "compatibility": {},
+        "reason": "Качественный перевод и предметы на русском"
       }
     ]
   },
