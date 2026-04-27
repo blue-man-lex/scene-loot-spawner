@@ -1,72 +1,47 @@
 {
   "id": "scene-loot-spawner",
   "title": "Scene Loot Spawner",
-  "version": "1.0.4",
+  "description": "Professional toolset for loot generation, biome-based ingredient collection, and visual loot management.",
+  "version": "1.13.5",
+  "authors": [
+    {
+      "name": "Blue Man Lex",
+      "url": "https://github.com/blue-man-lex"
+    }
+  ],
   "url": "https://github.com/blue-man-lex/scene-loot-spawner",
   "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/main/module.json",
-  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.0.4/scene-loot-spawner.zip",
+  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.13.5/scene-loot-spawner.zip",
+  "bugs": "https://github.com/blue-man-lex/scene-loot-spawner/issues",
   "compatibility": {
-    "minimum": "13",
+    "minimum": "11",
     "verified": "13"
   },
   "relationships": {
     "requires": [
       {
         "id": "socketlib",
-        "type": "module",
-        "compatibility": {}
+        "type": "module"
       },
       {
         "id": "lib-wrapper",
-        "type": "module",
-        "compatibility": {}
+        "type": "module"
       }
     ],
     "recommends": [
       {
         "id": "treasure-hoard-manager",
-        "type": "module",
-        "compatibility": {}
-      },
-      {
-        "id": "fifthpendium",
-        "type": "module",
-        "compatibility": {},
-        "reason": "Большая база предметов SRD"
-      },
-      {
-        "id": "ag-dnd2024",
-        "type": "module",
-        "compatibility": {},
-        "reason": "Предметы по правилам 2024 года"
-      },
-      {
-        "id": "laaru-dnd5-hw",
-        "type": "module",
-        "compatibility": {},
-        "reason": "Качественный перевод и предметы на русском"
+        "type": "module"
       }
     ]
   },
   "esmodules": [
-    "scripts/main.js",
-    "scripts/config.js",
-    "scripts/lootGenerator.js",
-    "scripts/regionHandler.js",
-    "scripts/spawner.js",
-    "scripts/lootApp.js",
-    "scripts/eye/lootEyeApp.js"
+    "scripts/main.js"
   ],
   "styles": [
-    {
-      "src": "styles/spawner.css"
-    },
-    {
-      "src": "styles/hand.css"
-    },
-    {
-      "src": "styles/eye.css"
-    }
+    "styles/spawner.css",
+    "styles/hand.css",
+    "styles/eye.css"
   ],
   "packs": [
     {
@@ -81,6 +56,5 @@
       }
     }
   ],
-  "description": "",
   "flags": {}
 }

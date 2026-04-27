@@ -103,30 +103,28 @@ export class IngredientCollector {
         const ingredient = this.generator.generateIngredient(this.lastBiome, this.lastTypes, this.lastRarities);
         
         if (ingredient) {
-            // Определяем количество в зависимости от категории
-            const stackCategories = ["herbs", "wood", "ore", "crystals", "reagents"];
+            // ПРАВИЛО СТАКОВ: Только Травы/Еда (herbs) дают 1-3 шт. Остальное - 1 шт.
             let qty = 1;
-            
-            // Если категория подразумевает стаки - кидаем d10
-            if (stackCategories.includes(ingredient.category)) {
-                qty = Math.floor(Math.random() * 10) + 1; // от 1 до 10
+            if (ingredient.category === "herbs") {
+                qty = Math.floor(Math.random() * 3) + 1; // от 1 до 3
             }
             
-            // 1. Выдаем предмет персонажу (сразу нужное количество)
+            // 1. Выдаем предмет персонажу
             await this._giveItemToCharacter(ingredient, qty);
 
             // 2. Добавляем в визуальный лог
             this.addToCollected(ingredient, qty);
             
-            // 3. Увеличиваем счетчик цели
-            // Важно: +1 событие находки, а не +qty предметов
+            // 3. Увеличиваем счетчик событий поиска
             this.collectedCount++;
             
+            // ПРОВЕРКА ЗАВЕРШЕНИЯ
             if (this.collectedCount >= this.targetCount) {
                 this.stop();
-                ui.notifications.info(`Рука Лута: Цель достигнута! Выполнено ${this.targetCount} поисков.`);
+                ui.notifications.info(`Рука Лута: Сбор завершен! Найдено предметов для ${this.targetCount} целей.`);
+            } else {
+                this._sync();
             }
-            this._sync();
         }
     }
 
@@ -153,6 +151,22 @@ export class IngredientCollector {
                 } else {
                     // Если предмета нет, создаем новый с нужным кол-вом
                     itemData.system.quantity = qty;
+                    
+                    // --- ИНТЕГРАЦИЯ С THM (ЦЕНЫ) ---
+                    const thmApi = game.modules.get('treasure-hoard-manager')?.api;
+                    if (thmApi?.systemAdapter) {
+                        try {
+                            const generatedPrice = await thmApi.systemAdapter.generateItemPrice(itemData);
+                            if (generatedPrice > 0) {
+                                if (!itemData.system) itemData.system = {};
+                                if (!itemData.system.price) itemData.system.price = {};
+                                itemData.system.price.value = generatedPrice;
+                            }
+                        } catch (e) {
+                            console.warn(`SLS | Hand of Loot: Не удалось получить цену от THM для ${itemData.name}`, e);
+                        }
+                    }
+
                     await actor.createEmbeddedDocuments("Item", [itemData]);
                 }
             }

@@ -1,713 +1,293 @@
-/* Основные стили окна */
-.ingredient-hand {
-    padding: 10px;
-    background: #1e1e1e;
-    color: #ccc;
-    font-family: 'Signika', 'Segoe UI', sans-serif;
+/* 
+ * SLS: Hand of Loot v3 - Final Premium Polish
+ */
+
+/* 1. УБИРАЕМ СТАНДАРТНУЮ БЕЛУЮ РАМКУ FOUNDRY */
+#scene-loot-hand {
+    border: none !important;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8) !important;
+}
+
+#scene-loot-hand .window-content {
+    background: transparent !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
+.sls-hand-v3 {
+    --v3-bg: #0d0d0f;
+    --v3-panel: rgba(22, 22, 27, 0.98);
+    --v3-border: rgba(255, 255, 255, 0.08);
+    --v3-gold: #ffcc00;
+    --v3-blue: #4a9eff;
+    --v3-green: #4CAF50;
+    --v3-purple: #9b59b6;
+    --v3-legendary: #f39c12;
+    --v3-red: #ff4d4d;
+    
+    width: 100%;
     height: 100%;
+    background: var(--v3-bg);
+    color: #e0e0e0;
+    font-family: 'Signika', sans-serif;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Убираем скролл самого окна, скроллим панели */
+    overflow: hidden;
+    border-radius: 5px; /* Скругление углов самого приложения */
 }
 
-/* --- ЗАГОЛОВОК --- */
-.hand-header {
+/* ХЕДЕР */
+.v3-header {
+    flex: 0 0 45px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    border: 1px solid #444;
-    margin-bottom: 10px;
-    flex-shrink: 0;
+    padding: 0 15px;
+    background: var(--v3-panel);
+    border: 1px solid var(--v3-border);
+    border-radius: 8px;
+    margin-bottom: 8px;
 }
 
-.hand-header h2 {
-    margin: 0;
-    color: #ffcc00;
-    font-weight: 700;
-    font-size: 1.1em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: none;
-}
+.v3-header-left { display: flex; align-items: center; gap: 15px; }
+.v3-title { margin: 0; font-size: 1.1em; color: var(--v3-gold); text-transform: uppercase; border: none; }
 
-.hand-status {
-    font-size: 0.85em;
-    font-weight: bold;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: #000;
-    border: 1px solid #444;
-}
+/* ТЕМНЫЕ СЕЛЕКТОРЫ */
+.gm-user-switch { display: flex; align-items: center; gap: 6px; background: #222; padding: 2px 8px; border-radius: 5px; border: 1px solid #444; }
+.gm-user-switch select { background: transparent; border: none; color: #fff; font-size: 0.85em; outline: none; }
 
-.status-active { color: #4CAF50; }
-.status-inactive { color: #888; }
+.v3-status { font-size: 0.75em; font-weight: bold; padding: 4px 12px; border-radius: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--v3-border); color: #777; }
+.v3-status.active { color: var(--v3-green); border-color: var(--v3-green); }
 
-/* --- ОСНОВНОЙ КОНТЕНТ (ГРИД) --- */
-.hand-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Две колонки для низа */
-    grid-template-rows: auto 240px;   /* Верх авто, низ 240px */
-    gap: 10px;
+/* КОНТЕНТ */
+.v3-main-content {
     flex: 1;
-    min-height: 0; /* Важно для скролла */
-}
-
-/* --- ВЕРХНЯЯ ПАНЕЛЬ НАСТРОЕК (На всю ширину) --- */
-.settings-panel {
-    grid-column: 1 / -1; /* Растянуть на всю ширину */
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid #444;
-    border-radius: 5px;
-    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: none; /* Убираем ограничение высоты */
-    overflow-y: auto; /* Добавим скролл если не помещается */
-}
-
-/* Строки настроек */
-.settings-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-    background: rgba(0,0,0,0.2);
-    padding: 5px;
-    border-radius: 4px;
-}
-
-/* Компактная строка */
-.compact-row {
-    gap: 10px;
-    padding: 3px;
-}
-
-.compact-row .control-group {
-    flex: 1;
-    min-width: 120px;
-}
-
-.compact-row .control-group label {
-    font-size: 0.85em;
-    margin-bottom: 2px;
-}
-
-.compact-row .control-group select,
-.compact-row .control-group input {
-    height: 24px;
-    font-size: 0.85em;
-    padding: 2px 4px;
-}
-
-/* Специальная строка для фильтров */
-.filters-row {
-    gap: 20px;
-    align-items: flex-start;
-}
-
-/* Колонки фильтров */
-.filter-column {
-    flex: 1;
-    min-width: 200px;
-}
-
-.filter-column .available-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Компактные кубики */
-    gap: 8px;
-    overflow-y: auto;
-    max-height: 180px; /* Ограничим высоту чтобы не заезжать на третий блок */
-    padding-right: 5px;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.filter-label {
-    font-weight: bold;
-    color: #ffcc00;
-    font-size: 0.9em;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #444;
-    padding-bottom: 3px;
-}
-
-.rarity-group {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    align-items: center;
-    flex: 1;
-    min-width: 150px;
-}
-
-.types-group {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-}
-
-.control-group label {
-    font-weight: bold;
-    color: #ffcc00;
-    white-space: nowrap;
-}
-
-.control-group select,
-.control-group input {
-    background: #111;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 3px;
-    padding: 3px 5px;
-    width: 100%;
-    height: 28px;
-}
-
-/* Группа чекбоксов */
-.checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    flex: 2;
-}
-
-.checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: #1a1a1a;
-    padding: 2px 6px;
-    border-radius: 3px;
-    border: 1px solid #333;
-    font-size: 0.85em;
-    cursor: pointer;
-}
-
-.checkbox-item:hover {
-    background: #333;
-    border-color: #666;
-}
-
-.checkbox-item input {
-    margin: 0;
-    cursor: pointer;
-}
-
-/* Секция доступных ингредиентов */
-.available-section {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex: 1;
     min-height: 0;
-    border-top: 1px dashed #444;
-    padding-top: 5px;
-}
-
-.section-label {
-    font-size: 0.8em;
-    color: #888;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.available-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 5px;
-    max-height: 120px; /* Увеличили высоту для большего пространства */
-}
-
-.ingredient-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: #111;
-    border: 2px solid #333;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 0.8em;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.ingredient-card img {
-    width: 40px; /* Увеличим картинку */
-    height: 40px;
-    border: none;
-    flex-shrink: 0;
-}
-
-.ingredient-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.ing-name {
-    display: none; /* Скрываем название, показываем при наведении */
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
-}
-
-.ingredient-card:hover .ing-name {
-    display: block;
-}
-
-.ing-chance {
-    color: #4CAF50;
-    font-weight: bold;
-    font-size: 0.85em;
-    margin-top: 2px;
-}
-
-/* Рамки редкости для кубиков */
-.ingredient-card.rarity-common {
-    border-color: #808080;
-    background: rgba(128, 128, 128, 0.1);
-}
-
-.ingredient-card.rarity-common:hover {
-    border-color: #a0a0a0;
-    background: rgba(128, 128, 128, 0.2);
-}
-
-.ingredient-card.rarity-uncommon {
-    border-color: #00ff00;
-    background: rgba(0, 255, 0, 0.1);
-    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-}
-
-.ingredient-card.rarity-uncommon:hover {
-    border-color: #40ff40;
-    background: rgba(0, 255, 0, 0.2);
-    box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
-}
-
-.ingredient-card.rarity-rare {
-    border-color: #0080ff;
-    background: rgba(0, 128, 255, 0.1);
-    box-shadow: 0 0 5px rgba(0, 128, 255, 0.3);
-}
-
-.ingredient-card.rarity-rare:hover {
-    border-color: #40a0ff;
-    background: rgba(0, 128, 255, 0.2);
-    box-shadow: 0 0 8px rgba(0, 128, 255, 0.5);
-}
-
-.ingredient-card.rarity-very-rare,
-.ingredient-card.rarity-very_rare,
-.ingredient-card.rarity-veryRare {
-    border-color: #8000ff;
-    background: rgba(128, 0, 255, 0.1);
-    box-shadow: 0 0 5px rgba(128, 0, 255, 0.3);
-}
-
-.ingredient-card.rarity-very-rare:hover,
-.ingredient-card.rarity-very_rare:hover,
-.ingredient-card.rarity-veryRare:hover {
-    border-color: #a040ff;
-    background: rgba(128, 0, 255, 0.2);
-    box-shadow: 0 0 8px rgba(128, 0, 255, 0.5);
-}
-
-.ingredient-card.rarity-legendary {
-    border-color: #ff8000;
-    background: rgba(255, 128, 0, 0.1);
-    box-shadow: 0 0 5px rgba(255, 128, 0, 0.3);
-}
-
-.ingredient-card.rarity-legendary:hover {
-    border-color: #ffa040;
-    background: rgba(255, 128, 0, 0.2);
-    box-shadow: 0 0 8px rgba(255, 128, 0, 0.5);
-}
-
-/* --- НИЖНИЕ ПАНЕЛИ (ПРОГРЕСС И РЕЗУЛЬТАТ) --- */
-.progress-panel,
-.results-panel {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid #444;
-    border-radius: 5px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    flex: 1; /* Растягиваем панель чтобы justify-content работал */
-}
-
-/* Прижимаем содержимое прогресс панели к низу */
-.progress-panel {
-    justify-content: flex-end;
-    flex: 1; /* Растягиваем панель чтобы justify-content работал */
-}
-
-/* Убираем заголовок у левой панели */
-.progress-panel .panel-title {
-    display: none;
-}
-
-.panel-title {
-    margin: 0 0 8px 0;
-    border-bottom: 2px solid #333;
-    padding-bottom: 3px;
-    font-size: 0.9em;
-    color: #ddd;
-}
-
-/* Картинка биома */
-.biome-image-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px; /* Уменьшил отступ */
-    flex-shrink: 0;
-}
-
-.biome-image {
-    width: 120px; /* Уменьшил с 160px */
-    height: 120px; /* Уменьшил с 160px */
-    border-radius: 8px; /* Уменьшил скругление */
-    border: 2px solid #444; /* Уменьшил рамку */
-    object-fit: cover;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.biome-image:hover {
-    border-color: #666;
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-/* Прогресс бар */
-.progress-container {
-    background: #000;
-    height: 24px; /* Уменьшил с 32px */
-    border-radius: 12px; /* Уменьшил с 16px */
-    border: 1px solid #444;
-    position: relative;
-    margin: 5px 0; /* Уменьшил отступы */
     overflow: hidden;
 }
 
-.progress-fill {
-    background: linear-gradient(90deg, #2e7d32, #4CAF50);
-    height: 100%;
-    width: 0%;
-    transition: width 0.5s ease;
-}
-
-.progress-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.75em; /* Уменьшил шрифт */
-    font-weight: bold;
-    text-shadow: 0 0 3px #000;
-    width: 100%;
-    text-align: center;
-}
-
-.stats-row {
+/* ПАНЕЛЬ НАСТРОЕК (ТЕМНАЯ) */
+.v3-quick-settings {
+    flex: 0 0 auto;
     display: flex;
-    justify-content: space-between;
-    font-size: 0.8em; /* Уменьшил шрифт */
-    color: #aaa;
-    margin-top: 3px; /* Уменьшил отступ */
-}
-
-/* Список собранного */
-.collected-list {
-    flex: 1;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* ТАК ЖЕ КАК У ПРАВОЙ ПАНЕЛИ */
-    gap: 8px;
-    padding-right: 5px;
-    align-content: start; /* Выравнивание по верху */
-    position: relative; /* Важно для позиционирования empty-state */
-}
-
-.collected-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    background: #111;
-    border: 2px solid #333;
-    padding: 8px;
+    gap: 12px;
+    background: var(--v3-panel);
+    border: 1px solid var(--v3-border);
     border-radius: 8px;
-    font-size: 0.8em;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.collected-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.collected-item img {
-    width: 40px; /* Увеличим картинку */
-    height: 40px;
-    border: none;
-    flex-shrink: 0;
-}
-
-.collected-item .ing-name {
-    display: none; /* Скрываем название, показываем при наведении */
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75em;
-    white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
-}
-
-.collected-item:hover .ing-name {
-    display: block;
-}
-
-.collected-qty {
-    background: #4a9eff;
-    color: #fff;
-    border-radius: 10px;
-    padding: 2px 6px;
-    font-size: 0.75em;
-    font-weight: bold;
-    margin-top: 2px;
-}
-
-.empty-state {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #555;
-    font-style: italic;
-    font-size: 0.9em;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
-
-.empty-state i {
-    font-size: 6em; /* Увеличил с 2em до 6em (в 3 раза) */
+    padding: 12px;
     margin-bottom: 10px;
-    opacity: 0.5;
 }
 
-/* --- ФУТЕР (КНОПКИ) --- */
-.hand-footer {
-    margin-top: 10px;
+.v3-field { display: flex; flex-direction: column; flex: 1; gap: 4px; }
+.v3-field.short { flex: 0.3; }
+.v3-field label { font-size: 0.6em; text-transform: uppercase; color: #777; font-weight: bold; }
+
+.v3-field select, .v3-field input, .gm-user-switch select { 
+    background: #1a1a1c !important; 
+    color: #eee !important; 
+    border: 1px solid #444 !important; 
+    border-radius: 4px; 
+    padding: 4px 8px; 
+    font-size: 0.9em; 
+}
+
+/* ФОРСИРУЕМ ТЕМНЫЙ ЦВЕТ ДЛЯ ВЫПАДАЮЩЕГО СПИСКА */
+.v3-field select option, .gm-user-switch select option {
+    background: #1a1a1c !important;
+    color: #eee !important;
+}
+
+.v3-field select:focus, .v3-field input:focus, .gm-user-switch select:focus {
+    border-color: var(--v3-gold) !important;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.3) !important;
+    outline: none;
+}
+
+/* ВОРКСПЕЙС */
+.v3-workspace {
+    flex: 1;
     display: flex;
     gap: 10px;
-    justify-content: space-between;
-    flex-shrink: 0;
+    min-height: 0;
+    overflow: hidden;
 }
 
-.btn {
+/* ЛЕВАЯ ПАНЕЛЬ */
+.v3-aside-controls {
+    flex: 0 0 230px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.v3-card { background: var(--v3-panel); border: 1px solid var(--v3-border); border-radius: 8px; padding: 12px; }
+
+.v3-progress-card { flex: 0 0 auto; align-items: center; display: flex; flex-direction: column; gap: 12px; }
+.v3-biome-orb-wrap { 
+    position: relative; 
+    width: 110px; 
+    height: 110px; 
+    margin-bottom: 5px;
+}
+.v3-biome-img { 
+    width: 100%; 
+    height: 100%; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 3px solid rgba(255,255,255,0.1) !important; 
+    position: relative;
+    z-index: 2;
+}
+
+.v3-orb-glow { 
+    position: absolute; 
+    top: -10px; left: -10px; right: -10px; bottom: -10px; 
+    border-radius: 50%; 
+    filter: blur(15px); 
+    opacity: 0.6; 
+    z-index: 1;
+    animation: sls-orb-pulse 3s ease-in-out infinite;
+}
+
+@keyframes sls-orb-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+.v3-progress-bar { 
+    width: 100%; 
+    height: 12px; 
+    background: #000; 
+    border-radius: 6px; 
+    overflow: hidden; 
+    margin-bottom: 6px; 
+    border: 1px solid #333;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.v3-progress-bar .fill { 
+    height: 100%; 
+    background: linear-gradient(90deg, #1565c0, #42a5f5, #1565c0); 
+    background-size: 200% 100%;
+    animation: sls-progress-glow 2s linear infinite;
+    transition: width 0.4s ease; 
+}
+
+@keyframes sls-progress-glow {
+    0% { background-position: 100% 0%; }
+    100% { background-position: -100% 0%; }
+}
+
+.v3-progress-labels { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.85em; 
+    font-weight: bold; 
+    width: 100%; 
+    color: var(--v3-blue);
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.v3-action-buttons { display: flex; gap: 8px; width: 100%; }
+.v3-action-btn { border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; padding: 8px; }
+.v3-action-btn.start { flex: 1; background: linear-gradient(135deg, #2e7d32, #1b5e20); font-size: 0.9em; }
+.v3-action-btn.stop { flex: 1; background: linear-gradient(135deg, #c62828, #b71c1c); font-size: 0.9em; }
+.v3-action-btn.reset { flex: 0 0 45px; background: #333; }
+.v3-action-btn:hover { filter: brightness(1.2); }
+
+/* ФИЛЬТРЫ */
+.v3-filters-card { flex: 1; overflow-y: auto; }
+.v3-sec-label { display: block; font-size: 0.7em; color: var(--v3-gold); font-weight: bold; margin-bottom: 6px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 3px; }
+.v3-checkbox-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 12px; }
+.v3-checkbox-grid label { display: flex; align-items: center; gap: 8px; font-size: 0.8em; cursor: pointer; }
+
+/* ПРАВАЯ ПАНЕЛЬ - СЕТКИ */
+.v3-data-columns {
     flex: 1;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid #444;
-    border-radius: 4px;
-    color: #ccc;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.v3-list-card { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.v3-available { flex: 1.6; }
+.v3-inventory { flex: 1; }
+
+.v3-box-header { margin: 0 0 8px 0; font-size: 0.75em; color: var(--v3-gold); text-transform: uppercase; opacity: 0.8; }
+
+.v3-grid-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.03);
+}
+
+.v3-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+}
+
+.v3-grid-item {
+    position: relative;
+    aspect-ratio: 1;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-    font-size: 0.9em;
+    transition: transform 0.1s;
 }
 
-.btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #666;
+.v3-grid-item:hover { transform: scale(1.05); z-index: 10; border-color: #777; }
+.v3-grid-item img { width: 100%; height: 100%; border-radius: 6px; display: block; object-fit: cover; }
+
+.v3-item-badge {
+    position: absolute;
+    bottom: -3px; right: -3px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.75em;
+    font-weight: 900;
     color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    z-index: 5;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    letter-spacing: -0.5px;
 }
 
-.btn-start:hover:not(:disabled) {
-    background: #2e7d32;
-    border-color: #4CAF50;
-    color: #fff;
-    box-shadow: 0 0 5px rgba(0, 128, 0, 0.3);
+.v3-item-badge.chance { background: var(--v3-green); border: 1px solid rgba(255,255,255,0.2); }
+.v3-item-badge.qty { 
+    background: var(--v3-blue); 
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 0 8px rgba(74, 158, 255, 0.4), 0 2px 4px rgba(0,0,0,0.8);
 }
 
-.btn-stop:hover:not(:disabled) {
-    background: #4a1818;
-    border-color: #ff4444;
-    color: #ffcccc;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
-}
-
-.btn-collect:hover:not(:disabled) {
-    background: #2e7d32;
-    border-color: #4CAF50;
-    color: #fff;
-    box-shadow: 0 0 5px rgba(0, 128, 0, 0.3);
-}
-
-.btn-reset:hover:not(:disabled) {
-    background: #4a1818;
-    border-color: #ff4444;
-    color: #ffcccc;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
-}
-
-.btn:disabled {
-    background: rgba(255, 255, 255, 0.02);
-    border-color: #333;
-    color: #666;
-    cursor: not-allowed;
-}
-
-/* --- РАМКИ РЕДКОСТИ ДЛЯ КОРЗИНЫ --- */
-.collected-item.rarity-common {
-border-color: #808080;
-background: rgba(128, 128, 128, 0.1);
-}
-
-.collected-item.rarity-common:hover {
-border-color: #a0a0a0;
-background: rgba(128, 128, 128, 0.2);
-}
-
-.collected-item.rarity-uncommon {
-border-color: #00ff00;
-background: rgba(0, 255, 0, 0.1);
-box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-}
-
-.collected-item.rarity-uncommon:hover {
-border-color: #40ff40;
-background: rgba(0, 255, 0, 0.2);
-box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
-}
-
-.collected-item.rarity-rare {
-border-color: #0080ff;
-background: rgba(0, 128, 255, 0.1);
-box-shadow: 0 0 5px rgba(0, 128, 255, 0.3);
-}
-
-.collected-item.rarity-rare:hover {
-border-color: #40a0ff;
-background: rgba(0, 128, 255, 0.2);
-box-shadow: 0 0 8px rgba(0, 128, 255, 0.5);
-}
-
-.collected-item.rarity-very-rare,
-.collected-item.rarity-very_rare,
-.collected-item.rarity-veryRare {
-border-color: #8000ff;
-background: rgba(128, 0, 255, 0.1);
-box-shadow: 0 0 5px rgba(128, 0, 255, 0.3);
-}
-
-.collected-item.rarity-very-rare:hover,
-.collected-item.rarity-very_rare:hover,
-.collected-item.rarity-veryRare:hover {
-border-color: #a040ff;
-background: rgba(128, 0, 255, 0.2);
-box-shadow: 0 0 8px rgba(128, 0, 255, 0.5);
-}
-
-.collected-item.rarity-legendary {
-border-color: #ff8000;
-background: rgba(255, 128, 0, 0.1);
-box-shadow: 0 0 5px rgba(255, 128, 0, 0.3);
-}
-
-.collected-item.rarity-legendary:hover {
-border-color: #ffa040;
-background: rgba(255, 128, 0, 0.2);
-box-shadow: 0 0 8px rgba(255, 128, 0, 0.5);
-}
+/* РАМКИ РЕДКОСТИ (КАК В THM) */
+.v3-grid-item.rarity-glow-uncommon { border-color: var(--v3-green) !important; box-shadow: inset 0 0 5px rgba(76, 175, 80, 0.3); }
+.v3-grid-item.rarity-glow-rare { border-color: var(--v3-blue) !important; box-shadow: inset 0 0 5px rgba(74, 158, 255, 0.3); }
+.v3-grid-item.rarity-glow-veryRare { border-color: var(--v3-purple) !important; box-shadow: inset 0 0 5px rgba(155, 89, 182, 0.3); }
+.v3-grid-item.rarity-glow-legendary { border-color: var(--v3-legendary) !important; box-shadow: inset 0 0 8px rgba(243, 156, 18, 0.4); }
 
 /* Скроллбары */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #666; }
+.v3-grid-scroll-area::-webkit-scrollbar { width: 4px; }
+.v3-grid-scroll-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
 
-/* --- ИСПРАВЛЕНИЕ ВЫПАДАЮЩИХ СПИСКОВ --- */
-.control-group select {
-    background-color: #111; /* Темный фон самого поля */
-    color: #eee;            /* Светлый текст */
-    border: 1px solid #555;
-    /* Убираем стандартную стрелочку в некоторых браузерах, чтобы стиль применился лучше, 
-       но можно оставить, если не критично. Пока оставим стандартную. */
-}
-
-/* Опции внутри выпадающего списка */
-.control-group select option {
-    background-color: #222; /* Темно-серый фон для выпадашки */
-    color: #fff;            /* Белый текст */
-    padding: 5px;
-}
-
-/* На всякий случай для Firefox/Webkit */
-@-moz-document url-prefix() {
-    .control-group select {
-        color: #eee;
-        background: #111;
-    }
-    .control-group select option {
-        color: #fff;
-        background: #222;
-    }
-}
-
-/* --- ИСПРАВЛЕНИЕ ПУСТОГО СОСТОЯНИЯ --- */
-.empty-placeholder {
-    grid-column: 1 / -1; /* Заставляет элемент растянуться на все колонки сетки */
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #777;
-    text-align: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
+.glow-forest { background: var(--v3-green); box-shadow: 0 0 20px var(--v3-green); }
+.glow-mountain { background: #b0bec5; box-shadow: 0 0 20px #b0bec5; }
+.glow-swamp { background: #795548; box-shadow: 0 0 20px #795548; }
+.glow-desert { background: #ffb300; box-shadow: 0 0 20px #ffb300; }
+.glow-tundra { background: #81d4fa; box-shadow: 0 0 20px #81d4fa; }
+.glow-ocean { background: #1e88e5; box-shadow: 0 0 20px #1e88e5; }
+.readonly { opacity: 0.6; pointer-events: none; }

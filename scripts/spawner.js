@@ -210,8 +210,29 @@ export class LootSpawner {
                 // Добавляем предметы напрямую в инвентарь актера
                 if (uniqueLoot.length > 0) {
                     console.log(`SLS DEBUG | Добавляем ${uniqueLoot.length} предметов в контейнер:`, token.name);
-                    console.log(`SLS DEBUG | Структура первого предмета:`, JSON.stringify(uniqueLoot[0], null, 2));
                     
+                    // --- ИНТЕГРАЦИЯ С ТРЕШЕР ХОРД МЕНЕДЖЕРОМ (THM) ---
+                    // Проверяем наличие API THM для назначения цен
+                    const thmApi = game.modules.get('treasure-hoard-manager')?.api;
+                    if (thmApi?.systemAdapter) {
+                        console.log(`SLS | THM API найден. Генерируем динамические цены для лута...`);
+                        for (let itemData of uniqueLoot) {
+                            try {
+                                // Генерируем цену только если её нет или если хотим перезаписать системную скучную цену
+                                // Используем стандартный метод генерации из THM
+                                const generatedPrice = await thmApi.systemAdapter.generateItemPrice(itemData);
+                                if (generatedPrice > 0) {
+                                    // Устанавливаем цену в объект данных ПЕРЕД созданием в Foundry
+                                    if (!itemData.system) itemData.system = {};
+                                    if (!itemData.system.price) itemData.system.price = {};
+                                    itemData.system.price.value = generatedPrice;
+                                }
+                            } catch (e) {
+                                console.warn(`SLS | Не удалось сгенерировать цену для ${itemData.name} через THM`, e);
+                            }
+                        }
+                    }
+
                     try {
                         await token.actor.createEmbeddedDocuments('Item', uniqueLoot);
                         console.log(`SLS DEBUG | Предметы добавлены в контейнер:`, token.name);
