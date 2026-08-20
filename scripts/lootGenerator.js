@@ -57,16 +57,28 @@ export class LootGenerator {
         }
 
         // 2. Ищем в КОМПЕНДИУМАХ (дополняем или используем если папки пусты)
-        const sourcesString = game.settings.get("scene-loot-spawner", "lootSources");
-        const sourceIds = sourcesString.split(",").map(s => s.trim());
-        console.log(`SLS DEBUG | Ищем в компендиумах: ${sourcesString}`);
-
+        const currentSources = game.settings.get("scene-loot-spawner", "lootSources") || [];
+        const sourceIds = Array.isArray(currentSources) ? currentSources : currentSources.split(",").map(s => s.trim()).filter(s => s.length > 0);
+        
+        const packsToLoad = {};
         for (const id of sourceIds) {
-            const pack = game.packs.get(id);
+            if (id.includes(":")) {
+                const [packId, folderId] = id.split(":");
+                if (!packsToLoad[packId]) packsToLoad[packId] = { all: false, folders: [] };
+                packsToLoad[packId].folders.push(folderId);
+            } else {
+                packsToLoad[id] = { all: true, folders: [] };
+            }
+        }
+        
+        console.log(`SLS DEBUG | Ищем в компендиумах:`, packsToLoad);
+
+        for (const [packId, config] of Object.entries(packsToLoad)) {
+            const pack = game.packs.get(packId);
             if (pack) {
-                // Запрашиваем поля для фильтрации (без проблемных полей)
-                const index = await pack.getIndex({ fields: ["system.rarity", "system.price.value", "type"] });
-                console.log(`SLS DEBUG | Компендиум ${id}: ${index.length} предметов загружено`);
+                // Запрашиваем поля для фильтрации (добавлено поле folder и поля подтипов)
+                const index = await pack.getIndex({ fields: ["system.rarity", "system.type.value", "system.type.subtype", "system.price.value", "type", "folder"] });
+                console.log(`SLS DEBUG | Компендиум ${packId}: ${index.length} предметов загружено`);
                 
                 if (profile.filters) {
                     // Комбинируем фильтры профиля и биома
@@ -77,17 +89,23 @@ export class LootGenerator {
                         if (Math.random() > filter.chance) continue;
 
                         const matches = index.filter(i => {
+                            // Глобальный бан: Списки и конкретные чертежи (без ценности)
+                            const bannedIds = ["zf7yq3tTVk8LMEbI", "BRn9yumP9nYdq8Fd", "Sm1SQJRYojaADBk5", "P28tb6VKZt06nIIj"];
+                            if (bannedIds.includes(i._id)) return false;
+                            if (i.name && i.name.toLowerCase().includes("(список)")) return false;
+
+                            // 0. Проверка папки
+                            if (!config.all && !config.folders.includes(i.folder)) return false;
+
                             // 1. Тип (отсеиваем классы, расы и т.д.)
                             if (i.type !== filter.type) return false;
 　　　　　　　　　　　　
                             // 2. Подтип если указан (более гибкая проверка)
                             if (filter.subtype) {
-                                const itemSubtype = i.system?.type?.subtype || i.system?.type || "";
-                                if (itemSubtype && typeof itemSubtype === 'string' && !itemSubtype.includes(filter.subtype)) {
-                                    // Для отладки - покажем что не совпало
-                                    if (i.type === filter.type) {
-                                        console.log(`SLS DEBUG | Подтип не совпал: ${i.name} (${i.type}) ищем '${filter.subtype}' в '${itemSubtype}'`);
-                                    }
+                                // Извлекаем подтип. В dnd5e может быть в system.type.value или system.type.subtype
+                                const itemSubtype = i.system?.type?.value || i.system?.type?.subtype || i.system?.type || "";
+                                // Если подтипа нет вообще, а фильтр его требует - отказ (решает баг со списками)
+                                if (typeof itemSubtype !== 'string' || itemSubtype === "" || !itemSubtype.includes(filter.subtype)) {
                                     return false;
                                 }
                             }
@@ -184,11 +202,16 @@ export class LootGenerator {
                     const rarity = itemData.system.rarity || "common";
 
                     // 1. Оружие и Экипировка (Броня) - всегда 1 шт.
-                    // 2. Редкое и выше (rare, veryRare, legendary) - всегда 1 шт.
-                    const isSingleType = ["weapon", "equipment"].includes(type);
+                    // Свитки и книги - всегда 1 шт.
+                    // 2. Редкое и выше (rare, veryRare, legendary, artifact) - всегда 1 шт.
+                    const isWeaponArmor = ["weapon", "equipment"].includes(type);
+                    const isScrollOrBook = (type === "consumable" && itemData.system.type?.value === "scroll") ||
+                                           (type === "loot" && itemData.system.type?.value === "book") ||
+                                           (itemData.name && itemData.name.toLowerCase().includes("свиток")) ||
+                                           (itemData.name && itemData.name.toLowerCase().includes("книг"));
                     const isHighRarity = ["rare", "veryRare", "legendary", "artifact"].includes(rarity);
 
-                    if (isSingleType || isHighRarity) {
+                    if (isWeaponArmor || isScrollOrBook || isHighRarity) {
                         itemData.system.quantity = 1;
                     } else {
                         // Для всего остального (расходники, лут, обычное) - от 1 до 3

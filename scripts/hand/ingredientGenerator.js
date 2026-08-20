@@ -38,8 +38,10 @@ export class IngredientGenerator {
             this.ingredients = [];
 
             const getIds = (key) => {
-                const s = game.settings.get("scene-loot-spawner", key) || "";
-                return s.split(",").map(v => v.trim()).filter(v => v.length > 0);
+                const s = game.settings.get("scene-loot-spawner", key);
+                if (Array.isArray(s)) return s;
+                if (typeof s === "string") return s.split(",").map(v => v.trim()).filter(v => v.length > 0);
+                return [];
             };
 
             // Берем ВСЕ компендиумы из всех полей настроек и сливаем в один котел
@@ -47,22 +49,35 @@ export class IngredientGenerator {
 
             const allSourceIds = [...new Set([...lootIds])];
 
+            const packsToLoad = {};
             for (const id of allSourceIds) {
-                const pack = game.packs.get(id);
+                if (id.includes(":")) {
+                    const [packId, folderId] = id.split(":");
+                    if (!packsToLoad[packId]) packsToLoad[packId] = { all: false, folders: [] };
+                    packsToLoad[packId].folders.push(folderId);
+                } else {
+                    packsToLoad[id] = { all: true, folders: [] };
+                }
+            }
+
+            for (const [packId, config] of Object.entries(packsToLoad)) {
+                const pack = game.packs.get(packId);
                 if (!pack) {
-                    console.warn(`SLS HAND | Компендиум ${id} не найден`);
+                    console.warn(`SLS HAND | Компендиум ${packId} не найден`);
                     continue;
                 }
 
-                // В новых версиях DnD5e тип может лежать в system.type.value или system.type.subtype
-                const index = await pack.getIndex({ fields: ["type", "system.type.value", "system.type.subtype", "system.rarity"] });
+                // В новых версиях DnD5e тип может лежать в system.type.value или system.type.subtype (добавлено поле folder)
+                const index = await pack.getIndex({ fields: ["type", "system.type.value", "system.type.subtype", "system.rarity", "folder"] });
                 
-                const docs = index.map(i => ({
+                const filteredIndex = config.all ? index : index.filter(i => config.folders.includes(i.folder));
+                
+                const docs = filteredIndex.map(i => ({
                     id: i._id,
                     name: i.name,
                     img: i.img,
                     uuid: i.uuid,
-                    pack: id, 
+                    pack: packId, 
                     type: i.type,
                     system: {
                         type: { 
@@ -148,78 +163,73 @@ export class IngredientGenerator {
         return "common";
     }
 
-    /**
-     * НОВАЯ УМНАЯ СИСТЕМА КАТЕГОРИЗАЦИИ
-     */
     categorizeIngredient(ingredient) {
         const name = String(ingredient.name).toLowerCase();
         const type = String(ingredient.type).toLowerCase();
         const systemType = String(ingredient.system?.type?.value || ingredient.system?.type?.subtype || "").toLowerCase();
+        const folderName = ingredient.folderName ? String(ingredient.folderName).toLowerCase() : "";
+        const folderId = ingredient.folder || "";
+        const packPath = ingredient.packPath ? String(ingredient.packPath).toLowerCase() : "";
         
         const includeWeaponArmor = game.settings.get("scene-loot-spawner", "includeWeaponArmorInHand") || false;
 
-        // 1. ПРОЧЕЕ (Оружие, броня, щиты, боеприпасы)
-        const isEquipment = ["weapon", "equipment", "shield"].includes(type) || (type === "consumable" && systemType === "ammo");
-        if (isEquipment) {
-            if (!includeWeaponArmor) return null; // Если галочка в настройках снята - выкидываем
-            return "other";
-        }
+        // Вспомогательная функция для проверки префиксов/вхождений
+        const hasWord = (words) => words.some(w => name.includes(w));
 
-        // 2. АЛХИМИЯ (Зелья, яды, бомбы)
-        const isAlchemyType = type === "consumable" && ["potion", "poison", "elixir", "oil"].includes(systemType);
+        // 1. АЛХИМИЯ (Зелья, яды, бомбы)
+        const isAlchemyType = type === "consumable" && ["potion", "poison", "elixir", "oil", "ammo"].includes(systemType);
         const alchemyWords = ['зелье', 'яд', 'токсин', 'эликсир', 'настой', 'масло', 'граната', 'бомба', 'взрывчатка', 'флакон', 'банка', 'potion', 'poison', 'elixir', 'oil', 'flask', 'bomb'];
-        if (isAlchemyType || alchemyWords.some(w => name.includes(w))) {
+        
+        // Разрешаем алхимию только если это расходник (consumable) или лут (loot). 
+        // Это защитит от попадания доспехов/оружия со словом "яд" в названии.
+        if (["consumable", "loot"].includes(type) && (isAlchemyType || hasWord(alchemyWords))) {
             return "alchemy";
         }
 
-        // 3. ТРАВЫ (Флора, грибы, еда)
-        // ЖЕСТКОЕ ОГРАНИЧЕНИЕ: Только тип 'consumable'. 
-        // Это отсекает "Самоцвет заклинаний" (Loot/Trinket), "Предание о Льюру" (Loot) и прочий мусор.
-        if (type === "consumable") {
-            // Исключаем свитки на всякий случай, хотя они часто Consumable
-            if (systemType === "scroll") return null;
-
-            const isFoodType = systemType === "food";
-            
-            const herbWords = [
-                'трав', 'цветок', 'соцветие', 'лепест', 'лист', 'корен', 'гриб', 'мох', 
-                'белладонна', 'костегриб', 'скальпник', 'ягод', 'яблок', 'фрукт', 'овощ', 
-                'еда', 'рацион', 'припас', 'мясо', 'хлеб', 'сыр', 
-                'herb', 'flower', 'leaf', 'root', 'mushroom', 'moss', 'berry', 
-                'apple', 'fruit', 'food', 'ration', 'meat', 'bread', 'cheese'
-            ];
-            
-            if (isFoodType || herbWords.some(w => name.includes(w))) {
-                return "herbs";
-            }
-        }
-
-        // 4. РЕАГЕНТЫ (Животного происхождения, монстры)
-        const reagentWords = ['слиз', 'кров', 'глаз', 'сердц', 'клык', 'когот', 'рог', 'чешу', 'кост', 'желез', 'патагий', 'хитин', 'пер', 'паутин', 'slime', 'blood', 'eye', 'heart', 'fang', 'claw', 'horn', 'scale', 'bone', 'gland', 'feather', 'web'];
-        if (reagentWords.some(w => name.includes(w))) {
-            return "reagents";
-        }
-
-        // 5. РУДА
-        const oreWords = ['руд', 'слиток', 'металл', 'желез', 'мед', 'серебр', 'золот', 'ore', 'ingot', 'metal', 'iron', 'copper', 'silver', 'gold'];
-        if (oreWords.some(w => name.includes(w))) {
-            return "ore";
-        }
-
-        // 6. КРИСТАЛЛЫ
-        const crystalWords = ['кристал', 'пыль', 'самоцвет', 'алмаз', 'рубин', 'сапфир', 'изумруд', 'жемчуг', 'crystal', 'dust', 'gem', 'diamond', 'ruby', 'sapphire', 'emerald', 'pearl'];
-        if (crystalWords.some(w => name.includes(w))) {
+        // 2. КРИСТАЛЛЫ
+        // Подтип gem ИЛИ подтип trinket со словом "ограненный"
+        if (systemType === "gem" || (systemType === "trinket" && hasWord(["ограненный", "огранённый"]))) {
             return "crystals";
         }
 
-        // 7. ДЕРЕВО
-        const woodWords = ['дерев', 'ветк', 'кора', 'полен', 'доск', 'wood', 'branch', 'bark', 'log', 'plank'];
-        if (woodWords.some(w => name.includes(w))) {
-            return "wood";
+        // 3. РУДА
+        // Подтип material + слова "руда", "слиток", "металл", "железо", "медь", "серебро", "золото"
+        const oreWords = ['руда', 'руд', 'слиток', 'металл', 'желез', 'мед', 'серебр', 'золот', 'ore', 'ingot', 'metal'];
+        if (systemType === "material" && hasWord(oreWords)) {
+            return "ore";
         }
 
-        // 8. ЕСЛИ НИЧЕГО НЕ ПОДОШЛО, но это лут или расходник - кидаем в "Прочее"
-        if (["loot", "consumable", "backpack", "tool"].includes(type)) {
+        // 4. РЕАГЕНТЫ
+        const reagentTrinketWords = ['шкура', 'панцирь', 'воск', 'ткань', 'чешуя', 'кожа'];
+        const reagentFoodWords = ['зола', 'купорос', 'соль', 'сублимат', 'суспензия', 'эссенция'];
+        
+        if (
+            systemType === "material" || 
+            systemType === "resource" || 
+            (systemType === "trinket" && hasWord(reagentTrinketWords)) || 
+            (systemType === "food" && hasWord(reagentFoodWords)) ||
+            folderName.includes("ingredient") ||
+            packPath.includes("ingredient") ||
+            name.includes("ингредиент")
+        ) {
+            return "reagents";
+        }
+
+        // 5. ТРАВЫ/ЕДА
+        // Так как алхимическая еда ушла в Реагенты, тут остается чистая Еда
+        if (systemType === "food") {
+            return "herbs";
+        }
+
+        // 6. И ПРОЧЕЕ
+        // Безделушки (которые не ушли в кристаллы или реагенты), предметы роскоши, лут без подтипа
+        if (systemType === "trinket" || type === "loot" || type === "backpack" || type === "tool") {
+            return "other";
+        }
+
+        // Оружие, броня, амуниция (если стоит галочка)
+        const isEquipment = ["weapon", "equipment", "shield"].includes(type) || (type === "consumable" && systemType === "ammo");
+        if (isEquipment && includeWeaponArmor) {
             return "other";
         }
 

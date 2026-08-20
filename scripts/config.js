@@ -159,20 +159,24 @@ export const LOOT_CONFIG = {
             filters: [
                 { type: "weapon", chance: 0.7 },
                 { type: "equipment", subtype: "armor", chance: 0.5 },
-                { type: "consumable", subtype: "ammo", chance: 0.6 }
+                { type: "consumable", subtype: "ammo", chance: 0.6 },
+                { type: "loot", subtype: "material", chance: 0.7 } // Слитки, руды
             ]
         },
         "library": {
             label: "Библиотека / Кабинет",
             filters: [
-                { type: "consumable", subtype: "scroll", chance: 0.8 } // Свитки обычно consumable в dnd5e
+                { type: "consumable", subtype: "scroll", chance: 0.8 },
+                { type: "loot", subtype: "ingredient", chance: 0.6 }, // Соли, золы, купоросы
+                { type: "loot", subtype: "material", chance: 0.5 } // Чернила, пергаменты
             ]
         },
         "treasure": {
             label: "Сокровища (Сундук босса)",
             filters: [
                 { type: "loot", subtype: "gem", chance: 1.0 },
-                { type: "weapon", magic: true, chance: 0.5 } // magic - условный флаг, будем искать
+                { type: "weapon", magic: true, chance: 0.5 },
+                { type: "equipment", subtype: "armor", magic: true, chance: 0.5 }
             ]
         },
         "dungeon": {
@@ -206,9 +210,13 @@ export const LOOT_CONFIG = {
             label: "Логово / Крафт",
             filters: [
                 { type: "loot", subtype: "crafting", chance: 0.8 },
-                { type: "loot", subtype: "ingredient", chance: 0.7 },
-                { type: "weapon", magic: true, chance: 0.4 },
-                { type: "equipment", subtype: "armor", magic: true, chance: 0.3 }
+                { type: "loot", subtype: "ingredient", chance: 0.8 },
+                { type: "consumable", subtype: "potion", chance: 0.7 }, // зелья
+                { type: "consumable", subtype: "food", chance: 0.8 }, // еда, травы
+                { type: "consumable", subtype: "ammo", chance: 0.6 }, // амуниция
+                { type: "consumable", subtype: "trinket", chance: 0.5 }, // бочки (чудесные предметы)
+                { type: "weapon", chance: 0.6 }, // оружие (любое)
+                { type: "equipment", subtype: "armor", chance: 0.5 } // доспехи (любые)
             ]
         }
     }

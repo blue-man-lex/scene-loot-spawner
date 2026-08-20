@@ -2,16 +2,17 @@
   "id": "scene-loot-spawner",
   "title": "Scene Loot Spawner",
   "description": "Professional toolset for loot generation, biome-based ingredient collection, and visual loot management.",
-  "version": "1.13.5",
+  "version": "1.13.6",
   "authors": [
     {
       "name": "Art_lex",
-      "url": "https://github.com/blue-man-lex"
+      "url": "https://github.com/blue-man-lex",
+      "flags": {}
     }
   ],
   "url": "https://github.com/blue-man-lex/scene-loot-spawner",
   "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/main/module.json",
-  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.13.5/scene-loot-spawner.zip",
+  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.13.6/scene-loot-spawner.zip",
   "bugs": "https://github.com/blue-man-lex/scene-loot-spawner/issues",
   "compatibility": {
     "minimum": "11",
@@ -21,17 +22,20 @@
     "requires": [
       {
         "id": "socketlib",
-        "type": "module"
+        "type": "module",
+        "compatibility": {}
       },
       {
         "id": "lib-wrapper",
-        "type": "module"
+        "type": "module",
+        "compatibility": {}
       }
     ],
     "recommends": [
       {
         "id": "treasure-hoard-manager",
-        "type": "module"
+        "type": "module",
+        "compatibility": {}
       }
     ]
   },
@@ -39,9 +43,15 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/spawner.css",
-    "styles/hand.css",
-    "styles/eye.css"
+    {
+      "src": "styles/spawner.css"
+    },
+    {
+      "src": "styles/hand.css"
+    },
+    {
+      "src": "styles/eye.css"
+    }
   ],
   "packs": [
     {
@@ -53,7 +63,8 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      }
+      },
+      "flags": {}
     }
   ],
   "flags": {}

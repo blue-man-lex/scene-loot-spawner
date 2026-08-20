@@ -2,6 +2,7 @@ import { SceneLootApp } from "./lootApp.js";
 import { IngredientHandApp } from "./hand/ingredientHandApp.js";
 import { IngredientCollector } from "./hand/ingredientCollector.js";
 import { LootEyeApp } from "./eye/lootEyeApp.js";
+import { LootSourcesMenu } from "./settingsMenu.js";
 
 // Конфигурация стандартных шаблонов
 const DEFAULT_BLUEPRINTS = {
@@ -105,13 +106,22 @@ Hooks.once("init", () => {
         default: true
     });
 
+    game.settings.registerMenu("scene-loot-spawner", "lootSourcesMenu", {
+        name: "Библиотеки",
+        label: "Выбрать библиотеки",
+        hint: "Выберите компендиумы для сбора лута.",
+        icon: "fas fa-book",
+        type: LootSourcesMenu,
+        restricted: true
+    });
+
     game.settings.register("scene-loot-spawner", "lootSources", {
-        name: "Компендиумы ингредиентов (Общие)",
+        name: "Компендиумы ингредиентов",
         hint: "ID через запятую (dnd5e.items, etc).",
         scope: "world",
-        config: true,
-        type: String,
-        default: "dnd5e.items"
+        config: false,
+        type: Array,
+        default: ["dnd5e.items"]
     });
 
     game.settings.register("scene-loot-spawner", "includeWeaponArmorInHand", {

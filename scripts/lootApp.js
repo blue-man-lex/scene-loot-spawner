@@ -144,9 +144,17 @@ export class SceneLootApp extends FormApplication {
     }
 
     _getSourceStatus() {
-        const sourcesString = game.settings.get("scene-loot-spawner", "lootSources") || "";
-        const sourceIds = sourcesString.split(",").map(s => s.trim()).filter(s => s.length > 0);
-        return sourceIds.map(id => {
+        const currentSources = game.settings.get("scene-loot-spawner", "lootSources") || [];
+        const sourceIds = Array.isArray(currentSources) ? currentSources : currentSources.split(",").map(s => s.trim()).filter(s => s.length > 0);
+        
+        // Извлекаем только ID паков, отбрасывая ID папок
+        const uniquePackIds = new Set();
+        for (const id of sourceIds) {
+            const packId = id.includes(":") ? id.split(":")[0] : id;
+            uniquePackIds.add(packId);
+        }
+
+        return Array.from(uniquePackIds).map(id => {
             const pack = game.packs.get(id);
             return { id: id, valid: !!pack };
         });

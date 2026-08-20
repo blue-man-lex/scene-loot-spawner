@@ -1,0 +1,155 @@
+<style>
+.sources-menu .window-content {
+    background: #141414;
+    color: #ccc;
+    font-family: "Signika", sans-serif;
+    padding: 15px;
+}
+.sources-menu .pack-item {
+    padding: 8px 10px;
+    border-bottom: 1px solid #333;
+    transition: background 0.2s;
+    margin: 0;
+}
+.sources-menu .pack-item:hover, .sources-menu .folder-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.sources-menu .packs-list {
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    flex: 1; /* Позволяет списку занимать доступную высоту */
+}
+/* Переопределение ломающих стилей из spawner.css */
+.sources-menu input[type="checkbox"] {
+    display: inline-block !important;
+    margin: 0 10px 0 0 !important;
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0;
+}
+.sources-menu .sls-footer {
+    flex: 0 0 auto; /* Не даем футеру растягиваться по вертикали */
+    justify-content: center; /* Центрируем кнопку */
+    align-items: center;
+}
+.sources-menu .sls-btn {
+    padding: 6px 30px; /* Делаем кнопку адекватного размера */
+    font-size: 1.1em;
+    flex: 0 0 auto; /* Запрещаем кнопке тянуться на всю ширину */
+}
+
+/* Улучшение выравнивания и обрезки текста */
+.sources-menu .item-label {
+    display: flex; 
+    align-items: center; 
+    cursor: pointer; 
+    width: 100%; 
+    margin: 0;
+    overflow: hidden;
+}
+.sources-menu .item-title {
+    font-weight: bold; 
+    color: #ffcc00;
+    white-space: nowrap !important; 
+    overflow: hidden !important; 
+    text-overflow: ellipsis !important; 
+    flex-grow: 1;
+}
+.sources-menu .item-id {
+    color: #777; 
+    font-size: 0.85em; 
+    margin-left: 10px;
+    white-space: nowrap !important; 
+    overflow: hidden !important; 
+    text-overflow: ellipsis !important; 
+    max-width: 45%;
+    text-align: right;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+/* Стили для summary */
+.sources-menu details summary {
+    list-style: none;
+    outline: none;
+}
+.sources-menu details summary::-webkit-details-marker {
+    display: none;
+}
+/* Кастомная стрелка */
+.sources-menu details summary .fa-chevron-right {
+    transition: transform 0.2s;
+    color: #666;
+    margin-right: 8px;
+    flex-shrink: 0;
+    width: 12px;
+    text-align: center;
+}
+.sources-menu details[open] summary .fa-chevron-right {
+    transform: rotate(90deg);
+}
+
+.sources-menu .folder-item {
+    padding: 8px 10px 8px 45px;
+    border-bottom: 1px solid #333;
+    transition: background 0.2s;
+    margin: 0;
+    background: rgba(0,0,0,0.2);
+}
+</style>
+
+<form class="flexcol sls-form" autocomplete="off" style="height: 100%;">
+    <div class="form-group" style="margin-bottom: 10px; flex: 0 0 auto;">
+        <input type="text" id="pack-search" placeholder="Поиск по названию..." style="padding: 8px;">
+    </div>
+    
+    <div class="packs-list" style="overflow-y: auto;">
+        {{#if packs.length}}
+            {{#each packs}}
+                {{#if this.folders.length}}
+                    <details class="pack-container" data-name="{{this.label}} ({{this.id}})">
+                        <summary class="pack-item item-label" style="padding: 8px 10px; box-sizing: border-box;">
+                            <i class="fas fa-chevron-right"></i>
+                            <input type="checkbox" name="{{this.id}}" {{checked this.checked}}>
+                            <i class="fas fa-book" style="color: #888; margin-left: 5px; margin-right: 8px; flex-shrink: 0;"></i>
+                            <span class="item-title">{{this.label}}</span> 
+                            <span class="item-id">({{this.id}})</span>
+                        </summary>
+                        <div class="pack-folders">
+                            {{#each this.folders}}
+                            <div class="folder-item" data-name="{{this.label}} ({{this.id}})">
+                                <label class="item-label">
+                                    <input type="checkbox" name="{{this.id}}" {{checked this.checked}}>
+                                    <i class="fas fa-folder" style="color: #666; margin-right: 8px; flex-shrink: 0;"></i>
+                                    <span class="item-title" style="color: #ccc;">{{this.label}}</span> 
+                                    <span class="item-id" style="font-size: 0.75em;">({{this.id}})</span>
+                                </label>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </details>
+                {{else}}
+                    <div class="pack-item pack-container" data-name="{{this.label}} ({{this.id}})">
+                        <label class="item-label" style="padding-left: 20px;">
+                            <input type="checkbox" name="{{this.id}}" {{checked this.checked}}>
+                            <i class="fas fa-book" style="color: #888; margin-right: 8px; flex-shrink: 0;"></i>
+                            <span class="item-title">{{this.label}}</span> 
+                            <span class="item-id">({{this.id}})</span>
+                        </label>
+                    </div>
+                {{/if}}
+            {{/each}}
+        {{else}}
+            <div class="sls-empty">
+                Нет доступных компендиумов (Items).
+            </div>
+        {{/if}}
+    </div>
+
+    <footer class="sls-footer" style="margin-top: 15px;">
+        <button type="submit" name="submit" class="sls-btn">
+            <i class="fas fa-save"></i> Сохранить
+        </button>
+    </footer>
+</form>
