@@ -153,7 +153,7 @@ export class IngredientCollector {
                     itemData.system.quantity = qty;
                     
                     // --- ИНТЕГРАЦИЯ С THM (ЦЕНЫ) ---
-                    const thmApi = game.modules.get('treasure-hoard-manager')?.api;
+                    const thmApi = game.THM?.api || game.modules.get('treasure-hoard-manager')?.api;
                     if (thmApi?.systemAdapter) {
                         try {
                             const generatedPrice = await thmApi.systemAdapter.generateItemPrice(itemData);

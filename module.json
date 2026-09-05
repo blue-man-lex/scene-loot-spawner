@@ -2,7 +2,7 @@
   "id": "scene-loot-spawner",
   "title": "Scene Loot Spawner",
   "description": "Professional toolset for loot generation, biome-based ingredient collection, and visual loot management.",
-  "version": "1.13.6",
+  "version": "1.14.0",
   "authors": [
     {
       "name": "Art_lex",
@@ -12,11 +12,12 @@
   ],
   "url": "https://github.com/blue-man-lex/scene-loot-spawner",
   "manifest": "https://raw.githubusercontent.com/blue-man-lex/scene-loot-spawner/main/module.json",
-  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.13.6/scene-loot-spawner.zip",
+  "download": "https://github.com/blue-man-lex/scene-loot-spawner/releases/download/1.14.0/scene-loot-spawner.zip",
   "bugs": "https://github.com/blue-man-lex/scene-loot-spawner/issues",
   "compatibility": {
     "minimum": "11",
-    "verified": "13"
+    "verified": "14",
+    "maximum": "14"
   },
   "relationships": {
     "requires": [

@@ -81,7 +81,9 @@ export class LootSpawner {
             
             // 3. Превращаем их в контейнеры и наполняем УНИКАЛЬНЫМ лутом
             for (const tokenDoc of createdTokens) {
-                const token = tokenDoc.object; // Объект на сцене
+                const token = tokenDoc.object || tokenDoc; // Токен или документ
+                const tokenActor = tokenDoc.actor || token.actor;
+                const tokenName = tokenDoc.name || token.name;
                 
                 // Получаем выбранный модуль из настроек
                 const selectedModule = game.settings.get("scene-loot-spawner", "containerModule");
@@ -134,7 +136,7 @@ export class LootSpawner {
                                 [`flags.treasure-hoard-manager.enabled`]: true,
                                 [`flags.treasure-hoard-manager.version`]: "1.0.0",
                                 [`flags.treasure-hoard-manager.data`]: {
-                                    containerName: token.actor.name,
+                                    containerName: tokenActor.name,
                                     isVisibleToPlayers: containerSettings.visibilitySettings.gmOnly,
                                     autoLoot: containerSettings.autoLoot,
                                     enabled: true
@@ -155,13 +157,13 @@ export class LootSpawner {
                             };
                             
                             // Применяем флаги
-                            await token.document.update(tokenFlags);
-                            await token.actor.update(actorFlags);
+                            await tokenDoc.update(tokenFlags);
+                            await tokenActor.update(actorFlags);
                             
-                            console.log(`SLS DEBUG | КОНТЕЙНЕР THM создан для: ${token.name}`);
+                            console.log(`SLS DEBUG | КОНТЕЙНЕР THM создан для: ${tokenName}`);
                             
                             // Проверяем примененные флаги
-                            const flags = token.actor.flags;
+                            const flags = tokenActor.flags;
                             console.log(`SLS DEBUG | Флаги актера после создания контейнера:`, flags);
                             const thmFlags = flags['treasure-hoard-manager'];
                             console.log(`SLS DEBUG | THM флаги:`, thmFlags);
@@ -189,9 +191,9 @@ export class LootSpawner {
 
                             // Вызываем правильный метод: turnTokensIntoItemPiles
                             // Настройки передаем напрямую вторым аргументом!
-                            await game.itempiles.API.turnTokensIntoItemPiles(token.document, pileSettings);
+                            await game.itempiles.API.turnTokensIntoItemPiles(tokenDoc, pileSettings);
 
-                            console.log(`SLS DEBUG | КОНТЕЙНЕР Item Piles создан для: ${token.name}`);
+                            console.log(`SLS DEBUG | КОНТЕЙНЕР Item Piles создан для: ${tokenName}`);
                         } catch (error) {
                             console.error(`SLS ERROR | Ошибка при создании Item Pile:`, error);
                         }
@@ -209,11 +211,11 @@ export class LootSpawner {
                 
                 // Добавляем предметы напрямую в инвентарь актера
                 if (uniqueLoot.length > 0) {
-                    console.log(`SLS DEBUG | Добавляем ${uniqueLoot.length} предметов в контейнер:`, token.name);
+                    console.log(`SLS DEBUG | Добавляем ${uniqueLoot.length} предметов в контейнер:`, tokenName);
                     
                     // --- ИНТЕГРАЦИЯ С ТРЕШЕР ХОРД МЕНЕДЖЕРОМ (THM) ---
                     // Проверяем наличие API THM для назначения цен
-                    const thmApi = game.modules.get('treasure-hoard-manager')?.api;
+                    const thmApi = game.THM?.api || game.modules.get('treasure-hoard-manager')?.api;
                     if (thmApi?.systemAdapter) {
                         console.log(`SLS | THM API найден. Генерируем динамические цены для лута...`);
                         for (let itemData of uniqueLoot) {
@@ -234,20 +236,20 @@ export class LootSpawner {
                     }
 
                     try {
-                        await token.actor.createEmbeddedDocuments('Item', uniqueLoot);
-                        console.log(`SLS DEBUG | Предметы добавлены в контейнер:`, token.name);
+                        await tokenActor.createEmbeddedDocuments('Item', uniqueLoot);
+                        console.log(`SLS DEBUG | Предметы добавлены в контейнер:`, tokenName);
                         
                         // Проверяем что предметы действительно в контейнере
                         setTimeout(() => {
-                            const items = token.actor.items.contents;
-                            console.log(`SLS DEBUG | Текущие предметы в контейнере ${token.name}:`, items.map(i => ({name: i.name, id: i.id, quantity: i.system?.quantity})));
+                            const items = tokenActor.items.contents;
+                            console.log(`SLS DEBUG | Текущие предметы в контейнере ${tokenName}:`, items.map(i => ({name: i.name, id: i.id, quantity: i.system?.quantity})));
                         }, 500);
                     } catch (error) {
                         console.error(`SLS ERROR | Ошибка при добавлении предметов:`, error);
-                        ui.notifications.error(`Ошибка добавления предметов в ${token.name}: ${error.message}`);
+                        ui.notifications.error(`Ошибка добавления предметов в ${tokenName}: ${error.message}`);
                     }
                 } else {
-                    console.warn(`SLS WARNING | Нет предметов для добавления в контейнер ${token.name}!`);
+                    console.warn(`SLS WARNING | Нет предметов для добавления в контейнер ${tokenName}!`);
                     console.log(`SLS DEBUG | Проверяем настройки генерации:`, {
                         profile: config.profile,
                         tier: config.tier,
